@@ -124,5 +124,9 @@ function love.keypressed(key)
          end
       end
    end
+   
+   if key == "q" then
+      love.event.quit()
+   end
 end
       
