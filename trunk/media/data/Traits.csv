@@ -1,0 +1,22 @@
+Trait Name,Ignore,Vegan,Vegetarian,Delivery,Conflicts With,Highest Cost,Lowest Cost,Highest Quality,Lowest Quality,Favorite Genres,Disliked Genres,Begin Hour,End Hour
+Vegan,,1,1,0.1,Hates Vegetables; Pescatarian,5,1,5,1,Thai; Pho; Court,Burgers; Steak; BBQ; Pizza; Boba; Seafood,6,10
+Vegetarian,,0.5,1,0.1,Hates Vegetables; Pescatarian,5,1,5,1,Thai; Pho; Court; Sushi,Burgers; Steak; BBQ; Seafood,6,10
+Lactose Intolerant,,0.1,0.1,0.1,,5,1,5,1,,Pizza; Boba,6,10
+Cheap,,0,0.1,0.1,Middle Class; Rich,3,1,5,1,Pizza; Donuts; Burgers; Mexican; Sandwiches; Court,Sushi; Steak; Italian,6,10
+No burgers,,0.1,0.1,0.1,,5,1,5,1,,Burgers,6,10
+Lazy,,0,0,1,,5,1,5,1,Pizza; Chinese; Mexican,Steak,6,9
+Rich,,0.1,0.1,0,Cheap; Middle Class,5,3,5,1,Sushi; Steak; Italian,Pizza; Donuts,6,10
+Middle Class,,0,0.1,0.1,Rich; Cheap,4,2,5,1,,,6,10
+Cranky -What would this do?,x,0.1,0.1,0.1,,5,1,5,1,,,6,10
+Hungry -Similarly?,x,0.1,0.1,0.1,,5,1,5,1,,,6,10
+Can Drive -unnecessary?,x,0.1,0.1,0.1,,5,1,5,1,,,6,10
+Telephonophobia,,0.1,0.1,-1,,5,1,5,1,,,6,10
+Alchoholic,,0.1,0.1,0.1,,5,1,5,1,Beer,,6,12
+Hates Vegetables,,-1,-1,0.1,Vegan; Vegetarian,5,1,5,1,Burgers; Steak; BBQ; Court,Chinese; Thai; Pho,6,10
+Pescatarian,,0.1,0.1,0.1,,5,1,5,1,Sushi; Seafood,Burgers; Steak; BBQ,6,10
+Gourmet,,0.1,0.1,-1,Simple,5,1,5,1,Sushi; Crepes; Mediterranean,,6,10
+Vetoes Place at the End and Makes You Pick Again,,0.1,0.1,0.1,,5,1,5,1,,,6,10
+Distracted Easily,,0.1,0.1,0.1,,5,1,5,1,,,6,10
+Eats Late,,0.1,0.1,0.1,,5,1,5,1,,,8,12
+Simple,,0,0,0.1,Gourmet; Foreign Food,5,1,5,1,Burgers; Italian; Court; Sandwiches,Chinese; Thai; Sushi; Mediterranean,6,10
+Foreign Food,,0.1,0.1,0.1,Simple,5,1,5,1,Chinese; Thai; Sushi; Mediterranean; Pho; Crepes; Italian,Burgers; BBQ; Court; Steak; Sandwiches,6,10
