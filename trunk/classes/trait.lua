@@ -2,11 +2,13 @@ require 'class'
 
 Trait = newclass("Trait")
 
+--trait constructor. If no arguments are given, it will make a random trait.
 function Trait:init(name, vegan, vegatarian, delivery, conflicts, highestCost, lowestCost, highestQuality, lowestQuality, favoriteGenres, dislikedGenres, beginHour, endHour)
    if name == nil then
       -- randomly select a trait
       self:getRandomTrait()
    else
+      -- go for it, bro
       self.name = name
       self.vegan = vegan
       self.vegetarian = vegetarian
@@ -23,16 +25,25 @@ function Trait:init(name, vegan, vegatarian, delivery, conflicts, highestCost, l
       
       -- need to delimit the conflicts list
       if conflicts then
-         self.conflicts = split(conflicts, "; ")
+         local delimitedList = split(conflicts, "; ")
+         
+         for i, conflict in ipairs(delimitedList) do
+            -- map the conflicts so we can easily check
+            self.conflicts[conflict] = 1
+         end
       end
    end
 end
 
+-- sets up this Trait to have a random trait from the master list.
 function Trait:getRandomTrait()
+   -- set up the random seed
    math.randomseed(socket.gettime())
    local randomIndex = math.random(table.maxn(traitMasterList))
+   -- get the random trait
    local masterTrait = traitMasterList[randomIndex]
    
+   -- set all the variables, wowee
    self.name = masterTrait.name
    self.vegan = masterTrait.vegan
    self.vegetarian = masterTrait.vegetarian
@@ -48,6 +59,19 @@ function Trait:getRandomTrait()
    self.endHour = masterTrait.endHour
 end
 
+-- check if this Trait conflicts with any of the traits in the list
+function Trait:doesItConflict(traitsList)
+   for i, trait in ipairs(traitsList) do
+      if self.conflicts[trait.name] then
+         return true
+      end
+   end
+   
+   -- it didn't conflict! hurrah
+   return false
+end
+
+-- pretty print string
 function Trait:__tostring()
    local string = self.name .. " conflicts: "
    
