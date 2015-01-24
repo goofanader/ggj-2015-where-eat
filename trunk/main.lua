@@ -15,6 +15,7 @@ function love.load()
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
    
    --loading images
+   menuImage = love.graphics.newImage("media/Main_Menu.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
    
@@ -31,7 +32,7 @@ function love.load()
    --Phyl: we should have a background color, it's good for in case we put the picture some place wrong
    love.graphics.setBackgroundColor( 255, 255, 255 )
    
-   gameState = 1
+   gameState = 0
    turnSelect = 1
    restaurantSelect = 1
    roommateSelect = 1
@@ -45,30 +46,35 @@ end
 function love.draw()
    --draw the background
    love.graphics.setColor(255, 255, 255)
-   love.graphics.draw(backgroundImage, 0, 0, 0, imageScale)
+   if gameState == 0 then
+      love.graphics.draw(menuImage, 0, 0, 0, imageScale)
+   else
+      love.graphics.draw(backgroundImage, 0, 0, 0, imageScale)
+
+      --draw the clock's current time
+      wallClock:draw()
    
-   --draw the clock's current time
-   wallClock:draw()
+      --draw the roommates
    
-   --draw the roommates
+      --draw the foreground
+      love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
    
-   --draw the foreground
-   love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
-   
-   --draw black "console"
-   love.graphics.setColor( 0, 0, 0 )
-   love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
-   
-   --draw text
-   love.graphics.setColor( 255, 255, 255 )
-   love.graphics.print("MENU", 5 * imageScale, 54 * imageScale) --Screen size is 1280x720
-   
+      --draw black "console"
+      love.graphics.setColor( 0, 0, 0 )
+      love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
+      
+      --draw text
+      love.graphics.setColor( 255, 255, 255 )
+      love.graphics.print("MENU", 5 * imageScale, 54 * imageScale) --Screen size is 1280x720
+   end
 end
 
 function love.update(dt)
    
    --Finite State Machine!
-   if gameState == 1 then
+   if gameState == 0 then
+      --Main Menu
+   elseif gameState == 1 then
       --Turn options
    elseif gameState == 2 then
       --Choose a Restaurant
@@ -77,14 +83,18 @@ function love.update(dt)
    elseif gameState ==4 then
       --Choose Research
    else
-      --throw error
+      print("ERROR ERROR ERROR")
    end
    
    wallClock:update(dt)
 end
 
 function love.keypressed(key)
-   if gameState > 0 then
+   if gameState == 0 then
+      if key == "enter" then
+         gameState = 1
+      end
+   else
       --TODO: play boop sound
       if gameState == 1 then
          if key == "up" and turnSelect > 1 then
@@ -104,8 +114,10 @@ function love.keypressed(key)
          elseif key == "down" and restaurantSelect < 4 then
             restaurantSelect = restaurantSelect + 1
             print("down")
+         elseif key == "enter" then
+            gameState = 1 --go back to start
+            --TODO: play accept sound
          end
-         
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
             roommateSelect = roommateSelect - 1
@@ -113,6 +125,9 @@ function love.keypressed(key)
          elseif key == "down" and roommateSelect < 4 then
             roommateSelect = roommateSelect + 1
             print("down")
+         elseif key == "enter" then
+            gameState = 1 --go back to start
+            --TODO: play accept sound
          end
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
@@ -121,6 +136,9 @@ function love.keypressed(key)
          elseif key == "down" and researchSelect < 2 then
             researchSelect = researchSelect + 1
             print("down")
+         elseif key == "enter" then
+            gameState = 1 --go back to start
+            --TODO: play accept sound
          end
       end
    end

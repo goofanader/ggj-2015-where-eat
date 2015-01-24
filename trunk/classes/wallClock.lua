@@ -104,9 +104,6 @@ function Time:setTime(hour, minute)
    self.minute = minute
 end
 
--- check my math, Elliott...
--- the math.floor calls are to replicate modulus since lua doesn't have it
--- It's "a % b == a - math.floor(a / b) * b"
 function Time:addMinutes(minutes)
    -- separate the number of hours to add from the minutes
    local addHours = math.floor(minutes / 60)
