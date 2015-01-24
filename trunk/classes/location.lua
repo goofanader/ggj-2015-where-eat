@@ -2,6 +2,7 @@ require 'class'
 
 Location = newclass("Location")
 
+-- location constructor
 function Location:init(name, genre, cost, quality, vegetarian, vegan, delivery, closingTime, slogan)
    self.name = name
    self.genre = genre
@@ -14,6 +15,7 @@ function Location:init(name, genre, cost, quality, vegetarian, vegan, delivery, 
    self.slogan = slogan
 end
 
+-- location's pretty print string
 function Location:__tostring()
    return self.name .. "(" .. self.genre .. ")"
 end
