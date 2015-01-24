@@ -1,12 +1,25 @@
 --What Do We Eat For Dinner?
 --A game by Andrew & Phyllis
 
+require 'classes/wallClock'
+
 function love.load()
+   --get the real dimensions of the screen
+   WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
+   
    love.mouse.setCursor(love.mouse.newCursor("media/mouse.png"))
    love.graphics.setDefaultFilter("nearest","nearest")
-   love.graphics.setNewFont("media/04B_03__.TTF",16)
+   defaultFont = love.graphics.setNewFont("media/04B_03__.TTF", 16 * WINDOW_WIDTH / 1280)
+   
+   --loading clock font
+   clockFont = love.graphics.newImageFont("media/Clock_Text.png", "1234567890: ")
+   
+   --loading images
+   foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
+   backgroundImage = love.graphics.newImage("media/BG_Background.png")
    
    --remove when we add a picture background
+   --Phyl: we should have a background color, it's good for in case we put the picture some place wrong
    love.graphics.setBackgroundColor( 255, 255, 255 )
    
    gameState = 1
@@ -14,16 +27,30 @@ function love.load()
    restaurantSelect = 1
    roommateSelect = 1
    researchSelect = 1
+   
+   wallClock = WallClock:new(Time:new(6, 0))
 end
 
 function love.draw()
+   --draw the background
+   love.graphics.setColor(255, 255, 255)
+   love.graphics.draw(backgroundImage, 0, 0, 0, WINDOW_WIDTH / backgroundImage:getWidth(), WINDOW_HEIGHT / backgroundImage:getHeight())
+   
+   --draw the clock's current time
+   wallClock:draw()
+   
+   --draw the roommates
+   
+   --draw the foreground
+   love.graphics.draw(foregroundImage, 0, 0, 0, WINDOW_WIDTH / foregroundImage:getWidth(), WINDOW_HEIGHT / foregroundImage:getHeight())
+   
    --draw black "console"
    love.graphics.setColor( 0, 0, 0 )
-   love.graphics.rectangle("fill", 0, 530, 1280, 190 )
+   love.graphics.rectangle("fill", 0, 530 * WINDOW_HEIGHT / 720, WINDOW_WIDTH, WINDOW_HEIGHT - (530 * WINDOW_HEIGHT / 720))
    
    --draw text
    love.graphics.setColor( 255, 255, 255 )
-   love.graphics.print("MENU", 50, 540) --Screen size is 1280x720
+   love.graphics.print("MENU", 50 * WINDOW_WIDTH / 1280, 540 * WINDOW_HEIGHT / 720) --Screen size is 1280x720
    
 end
 
@@ -42,6 +69,7 @@ function love.update(dt)
       --throw error
    end
    
+   wallClock:update(dt)
 end
 
 function love.keypressed(key)
