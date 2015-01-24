@@ -3,24 +3,29 @@
 
 require 'classes/data'
 require 'classes/wallClock'
+require 'classes/roommate'
+require ("socket")
 
 function love.load()
+   love.graphics.setDefaultFilter("nearest","nearest")
    --load the data
    buildDataTables()
    
    --get the real dimensions of the screen
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
    
-   love.mouse.setCursor(love.mouse.newCursor("media/mouse.png"))
-   love.graphics.setDefaultFilter("nearest","nearest")
-   defaultFont = love.graphics.setNewFont("media/04B_03__.TTF", 16 * WINDOW_WIDTH / 1280)
-   
-   --loading clock font
-   clockFont = love.graphics.newImageFont("media/Clock_Text.png", "1234567890: ")
-   
    --loading images
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
+   
+   --set the image scale for the game
+   imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
+   
+   --loading fonts
+   clockFont = love.graphics.newImageFont("media/Clock_Text.png", "1234567890: ")
+   defaultFont = love.graphics.setNewFont("media/04B_03__.TTF", 16)
+   
+   love.mouse.setCursor(love.mouse.newCursor("media/mouse.png"))
    
    --remove when we add a picture background
    --Phyl: we should have a background color, it's good for in case we put the picture some place wrong
@@ -33,12 +38,14 @@ function love.load()
    researchSelect = 1
    
    wallClock = WallClock:new(Time:new(6, 0))
+   testRoommate = Roommate:new("A")
+   print(testRoommate)
 end
 
 function love.draw()
    --draw the background
    love.graphics.setColor(255, 255, 255)
-   love.graphics.draw(backgroundImage, 0, 0, 0, WINDOW_WIDTH / backgroundImage:getWidth(), WINDOW_HEIGHT / backgroundImage:getHeight())
+   love.graphics.draw(backgroundImage, 0, 0, 0, imageScale)
    
    --draw the clock's current time
    wallClock:draw()
@@ -46,15 +53,15 @@ function love.draw()
    --draw the roommates
    
    --draw the foreground
-   love.graphics.draw(foregroundImage, 0, 0, 0, WINDOW_WIDTH / foregroundImage:getWidth(), WINDOW_HEIGHT / foregroundImage:getHeight())
+   love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
    
    --draw black "console"
    love.graphics.setColor( 0, 0, 0 )
-   love.graphics.rectangle("fill", 0, 530 * WINDOW_HEIGHT / 720, WINDOW_WIDTH, WINDOW_HEIGHT - (530 * WINDOW_HEIGHT / 720))
+   love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
    
    --draw text
    love.graphics.setColor( 255, 255, 255 )
-   love.graphics.print("MENU", 50 * WINDOW_WIDTH / 1280, 540 * WINDOW_HEIGHT / 720) --Screen size is 1280x720
+   love.graphics.print("MENU", 5 * imageScale, 54 * imageScale) --Screen size is 1280x720
    
 end
 

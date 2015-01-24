@@ -5,6 +5,7 @@ Trait = newclass("Trait")
 function Trait:init(name, vegan, vegatarian, delivery, conflicts, highestCost, lowestCost, highestQuality, lowestQuality, favoriteGenres, dislikedGenres, beginHour, endHour)
    if name == nil then
       -- randomly select a trait
+      self:getRandomTrait()
    else
       self.name = name
       self.vegan = vegan
@@ -27,7 +28,7 @@ function Trait:init(name, vegan, vegatarian, delivery, conflicts, highestCost, l
    end
 end
 
-function Trait:getRandomTrait(currentTraits)
+function Trait:getRandomTrait()
    math.randomseed(socket.gettime())
    local randomIndex = math.random(table.maxn(traitMasterList))
    local masterTrait = traitMasterList[randomIndex]

@@ -32,10 +32,7 @@ function WallClock:draw()
    -- Print the clock to the screen
    love.graphics.setColor(102, 153, 51) --a green color
    love.graphics.setFont(clockFont) --load the clock font specified in main.lua
-   --print(clockFont:getHeight())
-   --print(clockFont:getLineHeight())
-   local fontScale = 10--WINDOW_HEIGHT / clockFont:getHeight()
-   love.graphics.print(self.time:__tostring(), self.x * fontScale, self.y * fontScale, 0, fontScale)
+   love.graphics.print(self.time:__tostring(), self.x * imageScale, self.y * imageScale, 0, imageScale)
    
    --set it back to whatever font was before
    love.graphics.setColor(r,g,b,a)
