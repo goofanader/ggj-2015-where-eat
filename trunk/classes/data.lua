@@ -10,7 +10,7 @@ locationMasterList = {}
 
 -- text option choices globals
 turnOptions = {"Propose a place to eat","Ask a roommate for a suggestion","Research restaurants"}
-researchOptions = {"Menus","Hours"}
+researchOptions = {"Menus","Hours","Who Delivers"}
 
 function buildDataTables()
    local dataFolder = "media/data"
