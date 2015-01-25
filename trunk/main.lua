@@ -16,29 +16,20 @@ function love.load()
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
    --Initialize variables
    gameState = 0
-   turnSelect = 1
-   locationSelect = 1
-   pageSelect = 1
-   roommateSelect = 1
-   researchSelect = 1
    debugOn = -1
-   trollFlag = 0
-   trollTarget = nil
-   troll = nil
-   speaker = nil
-   hoursFound = false
-   costsFound = false
-   menusFound = false
-   delivFound = false
    --Some constants?
-   PAUSE_TIME = 6 --seconds
-   LOCATIONS_PER_PAGE = 6
+   PAUSE_TIME = 2 --seconds
+   LOCATIONS_PER_PAGE = 7
    SELECTION_WIDTH = 30
 
    --loading images
    menuImage = love.graphics.newImage("media/Title_Screen.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
+   loseImage = love.graphics.newImage("media/TacoTime.png")
+   winImage = love.graphics.newImage("media/Win_Screen.png")
+   leftImage = love.graphics.newImage("media/Left_Arrow.png")
+   rightImage = love.graphics.newImage("media/Right_Arrow.png")
 
    -- setup the roommate images
    roommateImages = {}
@@ -112,6 +103,27 @@ function love.draw()
    love.graphics.setColor(255, 255, 255)
    if gameState == 0 then
       love.graphics.draw(menuImage, 0, 0, 0, imageScale)
+      
+   elseif gameState == 6 then --WIN!
+      love.graphics.draw(winImage, 0, 0, 0, imageScale)
+      --draw black "console"
+      love.graphics.setColor( 0, 0, 0 )
+      love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
+      --draw text
+      love.graphics.setColor( 255, 255, 255 )
+      if results then
+         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+      end
+   elseif gameState == 7 then --LOSE :(
+      love.graphics.draw(loseImage, 0, 0, 0, imageScale)
+      --draw black "console"
+      love.graphics.setColor( 0, 0, 0 )
+      love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
+      --draw text
+      love.graphics.setColor( 255, 255, 255 )
+      if results then
+         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+      end
    else
       love.graphics.draw(backgroundImage, 0, 0, 0, imageScale)
 
@@ -161,6 +173,13 @@ function love.draw()
          if hoursFound then
             love.graphics.print( "CLOSES", (79 + SELECTION_WIDTH) * imageScale, 54 * imageScale)
          end
+         if pageSelect > 1 then
+            love.graphics.draw(leftImage, 2 * imageScale, 60 * imageScale, 0, 5)
+         end
+         if pageSelect < ( table.maxn(locationMasterList) / LOCATIONS_PER_PAGE ) then
+            love.graphics.draw(rightImage, 117 * imageScale, 60 * imageScale, 0, 5)
+         end
+         
          for i=1, LOCATIONS_PER_PAGE do
             if locationSelect == i then
                love.graphics.rectangle("fill", 9 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
@@ -234,7 +253,7 @@ function love.draw()
 end
 
 function love.update(dt)
-   if gameState == 0 then --Main Menu
+   if gameState == 0 then --Title Screen
    elseif gameState == 1 then --Turn options
    elseif gameState == 2 then --Choose a Restaurant
    elseif gameState == 3 then --Choose a Roommate
@@ -250,16 +269,18 @@ function love.update(dt)
          tickTime = love.timer.getTime( )
       end
       if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
-         gameState = 1 --go back to start
          if speaker then
             speaker:stopTalking()
          end
-         roommateSelect = 1
+         if wallClock.time.hour == 12 then
+            results = "It's midnight.\nAll the restaurants are closed.\nExcept for Taco Time.\nYou go to Taco Time with your crappy roommates.\nAnd you eat some crappy tacos.\nGAME OVER."
+            gameState = 7 --GAME OVER
+         else
+            gameState = 1 --go back to start
+         end
       end
-   elseif gameState == 6 then
-   elseif gameState == 7 then
-   else
-      print("ERROR ERROR ERROR")
+   elseif gameState == 6 then --WIN
+   elseif gameState == 7 then --LOSE
    end
 
    wallClock:update(dt)
@@ -287,9 +308,32 @@ function love.keypressed(key)
             end
          end
          gameState = 1
+         turnSelect = 1
+         locationSelect = 1
+         pageSelect = 1
+         roommateSelect = 1
+         researchSelect = 1
+         trollFlag = 0
+         trollTarget = nil
+         troll = nil
+         speaker = nil
+         hoursFound = false
+         costsFound = false
+         menusFound = false
+         delivFound = false
          playSound(sfx["select"])
          -- or alternately, sfx["begin"]:play() for begin game
       end
+   elseif gameState == 6 then --WIN
+      if key == "return" or key == " " then
+         gameState = 0
+      end
+      
+   elseif gameState == 7 then --LOSE
+      if key == "return" or key == " " then
+         gameState = 0
+      end
+      
    else
       math.randomseed(os.time())
       --TODO: play boop sound
@@ -302,7 +346,6 @@ function love.keypressed(key)
             turnSelect = turnSelect + 1
          elseif key == "return" or key == " " then
             gameState = turnSelect + 1 --selects between next gamestates
-            turnSelect = 1
             playSound(sfx["select"])
          end
 
@@ -394,23 +437,24 @@ function love.keypressed(key)
                trollFlag = 2
                trollTarget = location
                results = troll.name .. " rejects your suggestion out of spite.\nOr maybe this is " .. troll:getPossessive(false) .. " way of letting you know that " .. troll:getPronoun(false) .. " likes you.\nYou'll never know."
-               local randomString = {"Nah","I'm not feelin' it.","Eh.","Ew, not " .. location.name .. ", that's gross."}
+               local randomString = {"Nah.","I'm not feelin' it.","Eh.","Ew, not " .. location.name .. ", that's gross."}
                troll:startTalking(randomString[math.random(table.maxn(randomString))])
             elseif trollFlag == 1 then
                trollFlag = 0
             end
             if gameOver then
-               --TODO: Game Over logic
+               gameState = 7--Game Over
             elseif failure then
                gameState = 5
-               locationSelect = 1
                resultsTimer = true
+            elseif location.name == "Taco Time" then
+               results = "Everyone seems to be ok with going to Taco Time for dinner.\nUnfortunately, this means you're going to Taco Time for dinner.\nGAME OVER."
+               gameState = 7--Game Over
             else
-               --TODO: Win Game logic
-               --get location name and pass to results
+               gameState = 6 --Win Game!
+               results = "You finally picked a place where you will all eat! CONGRATULATIONS!\nYou, " .. roommates[1].name .. ", " .. roommates[2].name .. ", " .. roommates[3].name .. ", and " .. roommates[4].name .. " go get some " .. location.genre:lower() .. " at " .. location.name .. ".\nIt's delicious."
             end
          elseif key == "backspace" then
-            locationSelect = 1
             gameState = 1
             playSound(sfx["back"])
          end
@@ -469,7 +513,6 @@ function love.keypressed(key)
             gameState = 5 --go to results
             resultsTimer = true
          elseif key == "backspace" then
-            roommateSelect = 1
             gameState = 1
             playSound(sfx["back"])
          end
@@ -496,11 +539,9 @@ function love.keypressed(key)
                results = "You spend 15 minutes researching the hours of the restaurants\nand somehow manage to figure out when they all close."
                hoursFound = true
             end
-            researchSelect = 1
             gameState = 5 --go to results
             resultsTimer = true
          elseif key == "backspace" then
-            researchSelect = 1
             gameState = 1
             playSound(sfx["back"])
          end
