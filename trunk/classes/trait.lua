@@ -3,21 +3,18 @@ require 'class'
 Trait = newclass("Trait")
 
 --trait constructor. If no arguments are given, it will make a random trait.
-function Trait:init(name, vegan, vegatarian, delivery, conflicts, highestCost, lowestCost, highestQuality, lowestQuality, favoriteGenres, dislikedGenres, beginHour, endHour)
+function Trait:init(name, delivery, conflicts, highestCost, lowestCost, highestQuality, lowestQuality, dislikedGenres, beginHour, endHour)
    if name == nil then
       -- randomly select a trait
       self:getRandomTrait()
    else
       -- go for it, bro
       self.name = name
-      self.vegan = vegan
-      self.vegetarian = vegetarian
       self.delivery = delivery
       self.highestCost = highestCost
       self.lowestCost = lowestCost
       self.highestQuality = highestQuality
       self.lowestQuality = lowestQuality
-      self.favoriteGenres = favoriteGenres
       self.dislikedGenres = dislikedGenres
       self.beginHour = beginHour
       self.endHour = endHour
@@ -45,15 +42,12 @@ function Trait:getRandomTrait()
    
    -- set all the variables, wowee
    self.name = masterTrait.name
-   self.vegan = masterTrait.vegan
-   self.vegetarian = masterTrait.vegetarian
    self.delivery = masterTrait.delivery
    self.conflicts = masterTrait.conflicts
    self.highestCost = masterTrait.highestCost
    self.lowestCost = masterTrait.lowestCost
    self.highestQuality = masterTrait.highestQuality
    self.lowestQuality = masterTrait.lowestQuality
-   self.favoriteGenres = masterTrait.favoriteGenres
    self.dislikedGenres = masterTrait.dislikedGenres
    self.beginHour = masterTrait.beginHour
    self.endHour = masterTrait.endHour

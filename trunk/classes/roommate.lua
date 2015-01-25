@@ -36,7 +36,7 @@ function Roommate:init(gender, imageFile, textBox, textBoxCoordinates, name, num
       local newTrait = Trait:new()
 
       -- as long as the trait isn't already added and doesn't conflict with the other traits, insert it in
-      if not self.traits[newTrait.name] and not newTrait:doesItConflict(self.traits) then
+      if not self.traits[newTrait.name] and not newTrait:doesItConflict(self.traits) and not newTrait:doesItConflict(currentTraits) then
          table.insert(self.traits, newTrait)
          -- map the trait name, as well
          self.traits[newTrait.name] = newTrait

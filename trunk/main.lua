@@ -11,6 +11,7 @@ function love.load()
    --load the data
    buildDataTables()
    roommates = {}
+   currentTraits = {}
    --get the real dimensions of the screen
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
    --Initialize state variables
@@ -141,7 +142,6 @@ function love.draw()
          if results then
             love.graphics.print(results, 1 * imageScale, 54 * imageScale)
          end
-
       end
 
 
@@ -175,6 +175,8 @@ function love.update(dt)
       end
       if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
          gameState = 1 --go back to start
+         roommates[roommateSelect]:stopTalking()
+         roommateSelect = 1
       end
 
    else
@@ -187,13 +189,17 @@ end
 function love.keypressed(key)
    if gameState == 0 then
       if key == "return" or key == " " then
+         currentTraits = {}
          for i=1, 4 do
             local gender = "girl"
-
             if i == 1 or i == 4 then
                gender = "boy"
             end
             roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
+            for i, trait in ipairs(roommates[i].traits) do
+               table.insert(currentTraits,trait)
+            end
+            
          end
 
          --TODO: play start sound
@@ -210,14 +216,7 @@ function love.keypressed(key)
             gameState = turnSelect + 1 --selects between next 3 gamestates
             turnSelect = 1
 
-            for i=1, 4 do
-               local gender = "girl"
-
-               if i == 1 or i == 4 then
-                  gender = "boy"
-               end
-               roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
-            end
+            
             --TODO: play accept sound
          end
 
@@ -227,7 +226,13 @@ function love.keypressed(key)
          elseif key == "down" and locationSelect < 6 then
             locationSelect = locationSelect + 1
          elseif key == "return" or key == " " then
-
+            --go through all active traits to check for conflicts
+            for i, roomy in ipairs(roommates) do
+               for j, trait in ipairs(roomy.traits) do
+                  --if trait.vegan == 1 and restaurant.vegan == 0
+               end
+            end
+            
             locationSelect = 1
             gameState = 5 --go to results
             resultsTimer = true
@@ -244,10 +249,8 @@ function love.keypressed(key)
          elseif key == "down" and roommateSelect < 4 then
             roommateSelect = roommateSelect + 1
          elseif key == "return" or key == " " then
-            --Results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect].getPronoun(true) .. " picks up your suggestion and THROWS IT ON THE GROUND."
-            results = "You ask " .. "Tuxedo Mask" .. " for a suggestion. " .. "He" .. " picks up your suggestion and THROWS IT ON THE GROUND."
-            --roommates[roommateSelect].startTalking("TEST TEST TEST")
-            roommateSelect = 1
+            results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect]:getPronoun(true) .. " is pretty much useless."
+            roommates[roommateSelect]:startTalking("I'm feelin' pizza.")
             gameState = 5 --go to results
             resultsTimer = true
             --TODO: play accept sound
@@ -263,7 +266,7 @@ function love.keypressed(key)
          elseif key == "down" and researchSelect < 2 then
             researchSelect = researchSelect + 1
          elseif key == "return" or key == " " then
-            results = "You spend 15 minutes researching the " .. "Menus" .. "of the restaurants\nand manage to figure out when they all close"
+            results = "You spend 15 minutes researching the " .. "Menus" .. " of the restaurants\nand somehow manage to figure out when they all close."
             researchSelect = 1
             gameState = 5 --go to results
             resultsTimer = true
@@ -286,5 +289,17 @@ function love.keypressed(key)
    if key == "d" then
       debugOn = -debugOn
    end
-
+   if key == "r" then
+      currentTraits = {}
+      for i=1, 4 do
+         local gender = "girl"
+         if i == 1 or i == 4 then
+            gender = "boy"
+         end
+         roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
+         for i, trait in ipairs(roommates[i].traits) do
+            table.insert(currentTraits,trait)
+         end
+      end
+   end
 end
