@@ -59,13 +59,7 @@ function love.draw()
 
       --draw the roommates in between foreground and background
       love.graphics.draw(roommate1Image, 0,0,0, imageScale)
-      if debugOn == 1 then
-         love.graphics.setColor( 0, 255, 0 )
-         for i=1, 4 do
-            love.graphics.print(roommates[i]:__tostring(), (12+i) * imageScale, (17+5*i) * imageScale)
-         end
-         love.graphics.setColor(255, 255, 255)
-      end
+      
       
       --draw the foreground
       love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
@@ -124,6 +118,15 @@ function love.draw()
             love.graphics.setColor( 255, 255, 255 )
          end
       end
+      
+      if debugOn == 1 then
+         love.graphics.setColor( 0, 255, 0 )
+         for i=1, 4 do
+            love.graphics.print(roommates[i]:__tostring(), (12+i) * imageScale, (17+5*i) * imageScale)
+         end
+         love.graphics.setColor(255, 255, 255)
+      end
+      
    end
 end
 
@@ -164,7 +167,7 @@ function love.keypressed(key)
             turnSelect = turnSelect - 1
          elseif key == "down" and turnSelect < 3 then
             turnSelect = turnSelect + 1
-         elseif key == "return" then
+         elseif key == "return" or key == " " then
             gameState = turnSelect + 1 --selects between next 3 gamestates
             turnSelect = 1
             
@@ -173,35 +176,53 @@ function love.keypressed(key)
             end
             --TODO: play accept sound
          end
+         
       elseif gameState == 2 then
          if key == "up" and locationSelect > 1 then
             locationSelect = locationSelect - 1
          elseif key == "down" and locationSelect < 6 then
             locationSelect = locationSelect + 1
-         elseif key == "return" then
+         elseif key == "return" or key == " " then
             locationSelect = 1
             gameState = 1 --go back to start
+            wallClock.time:addMinutes(15)
             --TODO: play accept sound
+         elseif key == "backspace" then
+            locationSelect = 1
+            gameState = 1
+            --TODO: play back sound
          end
+         
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
             roommateSelect = roommateSelect - 1
          elseif key == "down" and roommateSelect < 4 then
             roommateSelect = roommateSelect + 1
-         elseif key == "return" then
+         elseif key == "return" or key == " " then
             roommateSelect = 1
             gameState = 1 --go back to start
+            wallClock.time:addMinutes(15)
             --TODO: play accept sound
+         elseif key == "backspace" then
+            roommateSelect = 1
+            gameState = 1
+            --TODO: play back sound
          end
+         
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
             researchSelect = researchSelect - 1
          elseif key == "down" and researchSelect < 2 then
             researchSelect = researchSelect + 1
-         elseif key == "return" then
+         elseif key == "return" or key == " " then
             researchSelect = 1
             gameState = 1 --go back to start
+            wallClock.time:addMinutes(15)
             --TODO: play accept sound
+         elseif key == "backspace" then
+            researchSelect = 1
+            gameState = 1
+            --TODO: play back sound
          end
       end
    end
