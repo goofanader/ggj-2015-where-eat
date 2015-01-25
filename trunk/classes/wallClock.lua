@@ -114,7 +114,7 @@ function Time:addMinutes(minutes)
    self.minute = self.minute + addMinutes
    
    -- if the minutes went over 60, add the extra hour(s) into self.hour and reset self.minute
-   if self.minute > 60 then
+   if self.minute >= 60 then
       addHours = math.floor(self.minute / 60)
       self.minute = self.minute - math.floor(self.minute / 60) * 60
       self.hour = self.hour + addHours
