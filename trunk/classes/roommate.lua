@@ -3,30 +3,47 @@ require 'classes/trait'
 
 Roommate = newclass("Roommate")
 
+local CHANGE_CHANCE = .2--.95
+local ANI_SPEED = .50
+local MAX_FRAMES = 12
+local PAUSE_TIME_ROOMMATES = 5
+
 local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis"},
    ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael"}}
 
 -- roommate constructor
-function Roommate:init(gender, imageFile, textBox, textBoxCoordinates, name, numTraits)
+function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, name, numTraits)
    self.gender = gender
    self.name = name
-   self.imageFile = imageFile
+   self.imageFiles = imageFiles
    self.textBox = textBox
    self.hasTextbox = false
    self.text = ""
    self.textBoxCoordinates = textBoxCoordinates
+   self.currFrame = 1
+   self.dt = 0
+   self.random = love.math.newRandomGenerator()
+   self.seed = seed
+   self.frameCount = 0
+   self.isAltFrame = false
+   self.random:setSeed(self.seed * 113)
+
+   --math.randomseed(seed + socket.gettime() * 1000)
+   --if self.random:random() > CHANGE_CHANCE then
+   self.isPaused = false
+   --else
+   --self.isPaused = true
+   --end
 
    if not self.name then
-      math.randomseed(socket.gettime())
-      self.name = randomName[gender][math.random(table.maxn(randomName[gender]))]
+      self.name = randomName[gender][self.random:random(table.maxn(randomName[gender]))]
    end
 
    self.traits = {}
 
    --get the number of traits this roommate's gonna get
    if not numTraits then
-      math.randomseed(socket.gettime())
-      numTraits = math.random(2,4) --I just picked 4, we can always change it
+      numTraits = self.random:random(2,4) --I just picked 4, we can always change it
    end
 
    -- loop through until we get 4 valid traits
@@ -76,22 +93,66 @@ function Roommate:draw()
    local origFont = love.graphics.getFont()
    love.graphics.setColor(255,255,255,255)
    love.graphics.setFont(defaultFont)
-   
-   if self.imageFile then
-      love.graphics.draw(self.imageFile, 0,0,0, imageScale)
+
+   if self.imageFiles then
+      love.graphics.draw(self.imageFiles[self.currFrame], 0,0,0, imageScale)
    end
-   
+
    if self.hasTextbox and self.textBox then
       love.graphics.draw(self.textBox, 0,0,0, imageScale)
       love.graphics.setColor(0,0,0)
       love.graphics.print(self.text, self.textBoxCoordinates[1] * imageScale, self.textBoxCoordinates[2] * imageScale)
    end
-   
+
    love.graphics.setColor(r,g,b,a)
    love.graphics.setFont(origFont)
 end
 
 function Roommate:update(dt)
+   self.dt = self.dt + dt
+   
+   local altFrame = 2
+   if self.isAltFrame then
+      altFrame = 3
+   end
+   
+   if not self.isPaused then
+      if self.dt > ANI_SPEED then
+         self.dt = 0
+
+         if self.random:random(2) == 2 then
+            self.currFrame = altFrame
+         else
+            self.currFrame = 1
+         end
+
+         self.frameCount = self.frameCount + 1
+
+         if self.frameCount > MAX_FRAMES then
+            --self.random:setSeed(self.seed * 113)
+            if self.random:random() > CHANGE_CHANCE then
+               self.isAltFrame = not self.isAltFrame
+               self.currFrame = 1
+            end
+
+            self.frameCount = 1
+         end
+      end
+   else
+      if self.dt > PAUSE_TIME_ROOMMATES then
+         self.random:setSeed(os.time() * self.seed)
+         if self.random:random() > CHANGE_CHANCE then
+            self.isPaused = not self.isPaused
+            self.currFrame = 1
+         end
+         self.dt = 0
+      end
+   end
+
+   --self.random:setSeed(os.time())
+   --if self.random:random() > CHANGE_CHANCE then
+   --self.isPaused = not self.isPaused
+   --end
 end
 
 -- it prints a pretty string about the roommate and their traits
