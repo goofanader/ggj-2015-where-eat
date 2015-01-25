@@ -45,7 +45,7 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
 
    --get the number of traits this roommate's gonna get
    if not numTraits then
-      numTraits = self.random:random(2,4) --I just picked 4, we can always change it
+      numTraits = self.random:random(2,3)
    end
 
    -- loop through until we get 4 valid traits
@@ -55,7 +55,7 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
       local newTrait = Trait:new()
 
       -- as long as the trait isn't already added and doesn't conflict with the other traits, insert it in
-      if not self.traits[newTrait.name] and not newTrait:doesItConflict(self.traits) and not newTrait:doesItConflict(currentTraits) then
+      if not self.traits[newTrait.name] and not currentTraits[newTrait.name] and not newTrait:doesItConflict(self.traits) and not newTrait:doesItConflict(currentTraits) then
          table.insert(self.traits, newTrait)
          -- map the trait name, as well
          self.traits[newTrait.name] = newTrait
