@@ -1,6 +1,5 @@
 --What Do We Eat For Dinner?
 --A game by Andrew & Phyllis
-
 require 'classes/data'
 require 'classes/wallClock'
 require 'classes/roommate'
