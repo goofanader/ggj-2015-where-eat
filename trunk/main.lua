@@ -18,7 +18,7 @@ function love.load()
    gameState = 0
    debugOn = -1
    --Some constants?
-   PAUSE_TIME = 2 --seconds
+   PAUSE_TIME = 6 --seconds
    LOCATIONS_PER_PAGE = 7
    SELECTION_WIDTH = 30
 
@@ -86,10 +86,12 @@ function love.load()
    math.randomseed(socket.gettime())
    math.random()
    math.random()
-
-   local songIndex = math.random(1, table.maxn(songs))
-   songs[songIndex]:setLooping(true)
-   songs[songIndex]:setVolume(.5)
+   
+   for i, song in ipairs(songs) do
+      song:setLooping(true)
+      song:setVolume(.7)
+   end
+   songIndex = math.random(1, table.maxn(songs))
    songs[songIndex]:play()
    
    if songIndex == 1 then
@@ -321,6 +323,16 @@ function love.keypressed(key)
          costsFound = false
          menusFound = false
          delivFound = false
+         
+         --play a different song
+         songs[songIndex]:stop()
+         songs[songIndex]:rewind()
+         songIndex = songIndex + 1
+         if songIndex > table.maxn(songs) then
+            songIndex = 1
+         end
+         songs[songIndex]:play()
+         
          playSound(sfx["select"])
          -- or alternately, sfx["begin"]:play() for begin game
       end
@@ -400,7 +412,7 @@ function love.keypressed(key)
                         elseif currentHour < trait.beginHour then
                            local randomString = {"It's a bit too early for " .. roomy.name .. " to eat now. " .. roomy:getPronoun(true) .. " isn't hungry yet!\nIn the next 15 minutes, your tummy rumbles 5 times.",roomy.name .. " can't eat until it's dark.\n" .. roomy:getPronoun(true) .. " points out the window at the dimming horizon.\n\"Still light out!\" " .. roomy:getPronoun(false) .. " says.\nYou watch the sun set for 15 minutes."}
                            results = randomString[math.random(table.maxn(randomString))]
-                           randomString = {"It's still light out.","I'm not hungry yet","Can't we wait a little bit longer?"}
+                           randomString = {"It's still light out.","I'm not hungry yet.","Can't we wait a little bit longer?"}
                            roomy:startTalking(randomString[math.random(table.maxn(randomString))])
                            failure = true
                         elseif currentHour >= trait.endHour then
@@ -577,7 +589,8 @@ end
 function playSound(sound)
    if sound then
       local newSound = love.audio.newSource(sound, "static")
-      newSound:setPitch(sfxPitch)
+      newSound:setVolume(.4)
+      --newSound:setPitch(sfxPitch)
       newSound:play()
    end
 end
