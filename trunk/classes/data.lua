@@ -24,7 +24,8 @@ function buildDataTables()
    for line in file:lines() do
       if not isFirst then
          --insert the genre name into the master list
-         table.insert(genreMasterList, line)
+         local delimitedList = split(line, ",")
+         table.insert(genreMasterList, delimitedList[1])
       end
    
       isFirst = false
