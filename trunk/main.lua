@@ -39,6 +39,8 @@ function love.load()
    menuImage = love.graphics.newImage("media/Title_Screen.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
+   loseImage = love.graphics.newImage("media/TacoTime.png")
+   winImage = love.graphics.newImage("media/Win_Screen.png")
 
    -- setup the roommate images
    roommateImages = {}
@@ -103,6 +105,27 @@ function love.draw()
    love.graphics.setColor(255, 255, 255)
    if gameState == 0 then
       love.graphics.draw(menuImage, 0, 0, 0, imageScale)
+      
+   elseif gameState == 6 then --WIN!
+      love.graphics.draw(winImage, 0, 0, 0, imageScale)
+      --draw black "console"
+      love.graphics.setColor( 0, 0, 0 )
+      love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
+      --draw text
+      love.graphics.setColor( 255, 255, 255 )
+      if results then
+         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+      end
+   elseif gameState == 7 then --LOSE :(
+      love.graphics.draw(loseImage, 0, 0, 0, imageScale)
+      --draw black "console"
+      love.graphics.setColor( 0, 0, 0 )
+      love.graphics.rectangle("fill", 0, 53 * imageScale, WINDOW_WIDTH, WINDOW_HEIGHT - (53 * imageScale))
+      --draw text
+      love.graphics.setColor( 255, 255, 255 )
+      if results then
+         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+      end
    else
       love.graphics.draw(backgroundImage, 0, 0, 0, imageScale)
 
@@ -247,8 +270,8 @@ function love.update(dt)
          end
          roommateSelect = 1
       end
-   elseif gameState == 6 then
-   elseif gameState == 7 then
+   elseif gameState == 6 then --WIN
+   elseif gameState == 7 then --LOSE
    else
       print("ERROR ERROR ERROR")
    end
@@ -281,6 +304,16 @@ function love.keypressed(key)
          sfx["select"]:play()
          -- or alternately, sfx["begin"]:play() for begin game
       end
+   elseif gameState == 6 then --WIN
+      if key == "return" or key == " " then
+         gameState = 0
+      end
+      
+   elseif gameState == 7 then --LOSE
+      if key == "return" or key == " " then
+         gameState = 0
+      end
+      
    else
       math.randomseed(os.time())
       --TODO: play boop sound
@@ -387,7 +420,7 @@ function love.keypressed(key)
                trollFlag = 0
             end
             if gameOver then
-               --TODO: Game Over logic
+               gameState = 7--Game Over
             elseif failure then
                gameState = 5
                locationSelect = 1
