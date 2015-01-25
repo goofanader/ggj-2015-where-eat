@@ -29,7 +29,7 @@ function love.load()
    PAUSE_TIME = 6 --seconds
 
    --loading images
-   menuImage = love.graphics.newImage("media/Main_Menu.png")
+   menuImage = love.graphics.newImage("media/Title_Screen.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
 
@@ -47,13 +47,14 @@ function love.load()
    roommateImages[2][1] = love.graphics.newImage("media/TextBox_WestDude.png")
    roommateImages[2][2] = love.graphics.newImage("media/TextBox_WestDudette.png")
    roommateImages[2][3] = love.graphics.newImage("media/TextBox_EastDudette.png")
-   --roommateImages[2][4] = love.graphics.newImage("media/TextBox_EastDude.png")
+   roommateImages[2][4] = love.graphics.newImage("media/TextBox_EastDude.png")
 
    -- set the x, y position of the text
    roommateImages[3] = {}
    roommateImages[3][1] = {13, 5}
    roommateImages[3][2] = {48, 18}
    roommateImages[3][3] = {29, 18}
+   roommateImages[3][4] = {53, 42}
 
    --set the image scale for the game
    imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
@@ -84,7 +85,6 @@ function love.draw()
 
       --draw the roommates in between foreground and background
       roommates[1]:draw()
-      roommates[4]:draw()
 
       --draw the foreground
       love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
@@ -92,6 +92,7 @@ function love.draw()
       -- draw the foreground roommates
       roommates[2]:draw()
       roommates[3]:draw()
+      roommates[4]:draw()
 
       --draw black "console"
       love.graphics.setColor( 0, 0, 0 )
