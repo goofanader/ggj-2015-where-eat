@@ -18,6 +18,10 @@ function love.load()
    menuImage = love.graphics.newImage("media/Main_Menu.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
+   roommate1Image = love.graphics.newImage("media/WestDude.png")
+   roommate2Image = love.graphics.newImage("media/WestDudette.png")
+   roommate3Image = love.graphics.newImage("media/EastDudette.png")
+   --roommate4Image = love.graphics.newImage("media/EastDude.png")
 
    --set the image scale for the game
    imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
@@ -53,7 +57,8 @@ function love.draw()
       --draw the clock's current time
       wallClock:draw()
 
-      --draw the roommates
+      --draw the roommates in between foreground and background
+      love.graphics.draw(roommate1Image, 0,0,0, imageScale)
       if debugOn == 1 then
          love.graphics.setColor( 0, 255, 0 )
          for i=1, 4 do
@@ -64,6 +69,10 @@ function love.draw()
       
       --draw the foreground
       love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
+      
+      -- draw the foreground roommates
+      love.graphics.draw(roommate2Image, 0,0,0, imageScale)
+      love.graphics.draw(roommate3Image, 0,0,0, imageScale)
 
       --draw black "console"
       love.graphics.setColor( 0, 0, 0 )
