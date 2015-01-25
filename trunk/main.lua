@@ -71,8 +71,12 @@ function love.load()
    table.insert(songs, love.audio.newSource("media/bensound-thejazzpiano.mp3"))
 
    -- load the sounds
-   sfx = {["select"] = love.audio.newSource("media/Select.wav", "static"),
-      ["back"] = love.audio.newSource("media/Back.wav", "static")}
+   sfx = {["select"] = love.sound.newSoundData("media/Select_Phyllis.wav"),
+      ["back"] = love.sound.newSoundData("media/Back_Phyllis.wav"),
+      ["move_up"] = love.sound.newSoundData("media/Move_Up.wav"),
+      ["move_down"] = love.sound.newSoundData("media/Move_Down.wav")}
+   --sfx["select"]:setVolume(.05)
+   --sfx["back"]:setVolume(.05)
 
    --set the image scale for the game
    imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
@@ -94,9 +98,9 @@ function love.load()
    math.random()
    math.random()
 
-   local songIndex = 2--math.random(1, table.maxn(songs))
+   local songIndex = math.random(1, table.maxn(songs))
    songs[songIndex]:setLooping(true)
-   songs[songIndex]:setVolume(1)
+   songs[songIndex]:setVolume(.5)
    songs[songIndex]:play()
 end
 
@@ -301,7 +305,7 @@ function love.keypressed(key)
             end
          end
          gameState = 1
-         sfx["select"]:play()
+         playSound(sfx["select"])
          -- or alternately, sfx["begin"]:play() for begin game
       end
    elseif gameState == 6 then --WIN
@@ -319,19 +323,23 @@ function love.keypressed(key)
       --TODO: play boop sound
       if gameState == 1 then
          if key == "up" and turnSelect > 1 then
+            playSound(sfx["move_up"])
             turnSelect = turnSelect - 1
          elseif key == "down" and turnSelect < table.maxn(turnOptions) then
+            playSound(sfx["move_down"])
             turnSelect = turnSelect + 1
          elseif key == "return" or key == " " then
             gameState = turnSelect + 1 --selects between next gamestates
             turnSelect = 1
-            sfx["select"]:play()
+            playSound(sfx["select"])
          end
 
       elseif gameState == 2 then
          if key == "up" and locationSelect > 1 then
+            playSound(sfx["move_up"])
             locationSelect = locationSelect - 1
          elseif key == "down" and locationSelect < LOCATIONS_PER_PAGE and locationMasterList[locationSelect+(pageSelect-1)*LOCATIONS_PER_PAGE+1] then
+            playSound(sfx["move_down"])
             locationSelect = locationSelect + 1
          elseif key == "left" and pageSelect > 1 then
             pageSelect = pageSelect - 1
@@ -340,7 +348,7 @@ function love.keypressed(key)
             pageSelect = pageSelect + 1
             locationSelect = 1
          elseif key == "return" or key == " " then
-            sfx["select"]:play()
+            playSound(sfx["select"])
             local failure = false
             local location = locationMasterList[locationSelect + (pageSelect-1) * LOCATIONS_PER_PAGE]
             local currentHour = wallClock.time.hour
@@ -432,16 +440,18 @@ function love.keypressed(key)
          elseif key == "backspace" then
             locationSelect = 1
             gameState = 1
-            sfx["back"]:play()
+            playSound(sfx["back"])
          end
 
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
+            playSound(sfx["move_up"])
             roommateSelect = roommateSelect - 1
          elseif key == "down" and roommateSelect < table.maxn(roommates) then
+            playSound(sfx["move_down"])
             roommateSelect = roommateSelect + 1
          elseif key == "return" or key == " " then
-            sfx["select"]:play()
+            playSound(sfx["select"])
 
             math.random()
             math.random()
@@ -489,16 +499,18 @@ function love.keypressed(key)
          elseif key == "backspace" then
             roommateSelect = 1
             gameState = 1
-            sfx["back"]:play()
+            playSound(sfx["back"])
          end
 
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
+            playSound(sfx["move_up"])
             researchSelect = researchSelect - 1
          elseif key == "down" and researchSelect < table.maxn(researchOptions) then
+            playSound(sfx["move_down"])
             researchSelect = researchSelect + 1
          elseif key == "return" or key == " " then
-            sfx["select"]:play()
+            playSound(sfx["select"])
             if researchSelect == 1 then
                results = "You had to spend 15 minutes to refresh your memory on\nwhat type of food each restaurant serves its customers."
                menusFound = true
@@ -518,7 +530,7 @@ function love.keypressed(key)
          elseif key == "backspace" then
             researchSelect = 1
             gameState = 1
-            sfx["back"]:play()
+            playSound(sfx["back"])
          end
 
       elseif gameState == 5 then
@@ -547,4 +559,8 @@ function love.keypressed(key)
          end
       end
    end
+end
+
+function playSound(sound)
+   love.audio.newSource(sound, "static"):play()
 end
