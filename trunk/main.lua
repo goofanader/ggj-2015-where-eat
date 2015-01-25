@@ -21,15 +21,15 @@ function love.load()
    pageSelect = 1
    roommateSelect = 1
    researchSelect = 1
-   debugOn = 1
+   debugOn = 0
    trollFlag = 0
    trollTarget = nil
    troll = nil
    speaker = nil
-   hoursFound = true--false
-   costsFound = true--false
-   menusFound = true--false
-   delivFound = true--false
+   hoursFound = false
+   costsFound = false
+   menusFound = false
+   delivFound = false
    --Some constants?
    PAUSE_TIME = 6 --seconds
    LOCATIONS_PER_PAGE = 6
@@ -140,27 +140,45 @@ function love.draw()
 
       elseif gameState == 2 then --Restaurant Options
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
+         if menusFound then
+            love.graphics.print( "MENU", (53 + SELECTION_WIDTH) * imageScale, 54 * imageScale)
+         end
+         if costsFound then
+            love.graphics.print( "COST", (63.5 + SELECTION_WIDTH) * imageScale, 54 * imageScale)
+         end
+         if delivFound then
+            love.graphics.print( "DELIVERY?", (69 + SELECTION_WIDTH) * imageScale, 54 * imageScale)
+         end
+         if hoursFound then
+            love.graphics.print( "CLOSES", (79 + SELECTION_WIDTH) * imageScale, 54 * imageScale)
+         end
          for i=1, LOCATIONS_PER_PAGE do
             if locationSelect == i then
-               love.graphics.rectangle("fill", 10 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 9 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             local j = i + (pageSelect - 1) * LOCATIONS_PER_PAGE --Actual number in larger list
             if locationMasterList[j] then
-               love.graphics.print( j .. ") " .. locationMasterList[j].name, 10 * imageScale, (54+2*i) * imageScale)
+               love.graphics.print( j .. ") " .. locationMasterList[j].name, 9 * imageScale, (54+2*i) * imageScale)
                love.graphics.setColor( 255, 255, 255 )
-               love.graphics.print( "\"" .. locationMasterList[j].slogan .. "\"", (11 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)               
+               love.graphics.print( "\"" .. locationMasterList[j].slogan .. "\"", (10 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)               
                if menusFound then
-                  love.graphics.print( locationMasterList[j].genre, (51 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+                  love.graphics.print( locationMasterList[j].genre, (50 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
                end
                if costsFound then
-                  love.graphics.print( locationMasterList[j].cost, (66 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+                  love.graphics.print( locationMasterList[j].cost, (65 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
                end
                if delivFound then
-                  love.graphics.print( locationMasterList[j].delivery, (72 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+                  local delivStr = ""
+                  if locationMasterList[j].delivery == 1 then
+                     delivStr = "Yes"
+                  else
+                     delivStr = "No"
+                  end
+                  love.graphics.print( delivStr, (71 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
                end
                if hoursFound then
-                  love.graphics.print( locationMasterList[j].closingTime, (78 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+                  love.graphics.print( locationMasterList[j].closingTime, (81 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
                end
             end
             love.graphics.setColor( 255, 255, 255 )

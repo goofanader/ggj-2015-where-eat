@@ -8,7 +8,7 @@ function Location:init(name, genre, cost, quality, delivery, closingTime, slogan
    self.genre = genre
    self.cost = tonumber(cost)
    self.quality = tonumber(quality)
-   self.delivery = delivery
+   self.delivery = tonumber(delivery)
    self.closingTime = tonumber(closingTime)
    self.slogan = slogan
 end
