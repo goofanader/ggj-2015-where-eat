@@ -55,6 +55,11 @@ function love.load()
    roommateImages[3][2] = {48, 18}
    roommateImages[3][3] = {29, 18}
    roommateImages[3][4] = {53, 42}
+   
+   -- load the songs
+   songs = {}
+   table.insert(songs, love.audio.newSource("media/bensound-theelevatorbossanova.mp3"))
+   table.insert(songs, love.audio.newSource("media/bensound-thejazzpiano.mp3"))
 
    --set the image scale for the game
    imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
@@ -70,6 +75,15 @@ function love.load()
    love.graphics.setBackgroundColor( 255, 255, 255 )
 
    wallClock = WallClock:new(Time:new(6, 0))
+   
+   --play a random song
+   math.randomseed(socket.gettime())
+   math.random()
+   math.random()
+   
+   local songIndex = math.random(1, table.maxn(songs))
+   songs[songIndex]:setLooping(true)
+   songs[songIndex]:play()
 end
 
 function love.draw()
