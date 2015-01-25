@@ -209,6 +209,7 @@ function love.keypressed(key)
             roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
             for i, trait in ipairs(roommates[i].traits) do
                table.insert(currentTraits,trait)
+               currentTraits[trait.name] = true
             end
          end
          gameState = 1
@@ -231,7 +232,6 @@ function love.keypressed(key)
          elseif key == "down" and locationSelect < 6 then
             locationSelect = locationSelect + 1
          elseif key == "return" or key == " " then
-            --go through all active traits to check for conflicts
             local failure = false
             local location = locationMasterList[locationSelect]
             local currentHour = wallClock.time.hour
@@ -355,6 +355,7 @@ function love.keypressed(key)
          roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
          for i, trait in ipairs(roommates[i].traits) do
             table.insert(currentTraits,trait)
+            currentTraits[trait.name] = true
          end
       end
    end
