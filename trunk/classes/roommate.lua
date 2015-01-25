@@ -26,7 +26,9 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
    self.seed = seed
    self.frameCount = 0
    self.isAltFrame = false
-   self.random:setSeed(self.seed * 113 * socket.gettime())
+   self.random:setSeed(self.seed * 228 * socket.gettime()*1000)
+   self.random:random()
+   self.random:random()
 
    --math.randomseed(seed + socket.gettime() * 1000)
    --if self.random:random() > CHANGE_CHANCE then
