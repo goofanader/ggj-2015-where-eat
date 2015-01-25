@@ -18,6 +18,7 @@ function love.load()
    gameState = 0
    turnSelect = 1
    locationSelect = 1
+   pageSelect = 1
    roommateSelect = 1
    researchSelect = 1
    debugOn = 1
@@ -25,8 +26,14 @@ function love.load()
    trollTarget = nil
    troll = nil
    speaker = nil
+   hoursFound = false
+   costsFound = false
+   menusFound = false
+   delivFound = false
    --Some constants?
    PAUSE_TIME = 6 --seconds
+   LOCATIONS_PER_PAGE = 6
+   SELECTION_WIDTH = 40
 
    --loading images
    menuImage = love.graphics.newImage("media/Title_Screen.png")
@@ -87,7 +94,7 @@ function love.load()
    
    local songIndex = 2--math.random(1, table.maxn(songs))
    songs[songIndex]:setLooping(true)
-   songs[songIndex]:setVolume(.5)
+   songs[songIndex]:setVolume(1)
    songs[songIndex]:play()
 end
 
@@ -124,7 +131,7 @@ function love.draw()
          love.graphics.print("WHAT DO YOU DO NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(turnOptions) do
             if turnSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
@@ -133,35 +140,53 @@ function love.draw()
 
       elseif gameState == 2 then --Restaurant Options
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
-         for i=1, 6 do
+         for i=1, LOCATIONS_PER_PAGE do
             if locationSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
-            love.graphics.print(i .. ") " .. locationMasterList[i]:__tostring(), 2 * imageScale, (54+2*i) * imageScale)
+            local j = i + (pageSelect - 1) * LOCATIONS_PER_PAGE --Actual number in larger list
+            if locationMasterList[j] then
+               love.graphics.print( j .. ") " .. locationMasterList[j].name, 2 * imageScale, (54+2*i) * imageScale)
+               --love.graphics.print( locationMasterList[j].slogan, 2 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+            end
             love.graphics.setColor( 255, 255, 255 )
+            if menusFound then
+               love.graphics.print( locationMasterList[j].genre, 10 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+            end
+            if costsFound then
+               love.graphics.print( locationMasterList[j].cost, 20 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+            end
+            if delivFound then
+               love.graphics.print( locationMasterList[j].delivery, 30 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+            end
+            if hoursFound then
+               love.graphics.print( locationMasterList[j].closingTime, 40 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+            end
          end
 
       elseif gameState == 3 then --Roommate Options
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 4 do
             if roommateSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(roommates[i].name, 4 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
+         
       elseif gameState == 4 then --Research Options
          love.graphics.print("WHAT DO YOU RESEARCH NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(researchOptions) do
             if researchSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
+         
       elseif gameState == 5 then --Results Screen!
          if results then
             love.graphics.print(results, 1 * imageScale, 54 * imageScale)
@@ -251,12 +276,18 @@ function love.keypressed(key)
       elseif gameState == 2 then
          if key == "up" and locationSelect > 1 then
             locationSelect = locationSelect - 1
-         elseif key == "down" and locationSelect < 6 then
+         elseif key == "down" and locationSelect < LOCATIONS_PER_PAGE and locationMasterList[locationSelect+(pageSelect-1)*LOCATIONS_PER_PAGE+1] then
             locationSelect = locationSelect + 1
+         elseif key == "left" and pageSelect > 1 then
+            pageSelect = pageSelect - 1
+            locationSelect = 1
+         elseif key == "right" and pageSelect < ( table.maxn(locationMasterList) / LOCATIONS_PER_PAGE ) then
+            pageSelect = pageSelect + 1
+            locationSelect = 1
          elseif key == "return" or key == " " then
             sfx["select"]:play()
             local failure = false
-            local location = locationMasterList[locationSelect]
+            local location = locationMasterList[locationSelect + (pageSelect-1) * LOCATIONS_PER_PAGE]
             local currentHour = wallClock.time.hour
             if currentHour > location.closingTime then
                results = "You think about mentioning the possibility of eating at " .. location.name .. " but then realize that they are closed.\nYou sit in shameful awkward silence for 15 minutes."
@@ -311,12 +342,14 @@ function love.keypressed(key)
             elseif failure then
                gameState = 5
                locationSelect = 1
+               pageSelect = 1
                resultsTimer = true
             else
                --TODO: Win Game logic
             end
          elseif key == "backspace" then
             locationSelect = 1
+            pageSelect = 1
             gameState = 1
             sfx["back"]:play()
          end
