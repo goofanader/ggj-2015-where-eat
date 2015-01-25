@@ -3,11 +3,13 @@ require 'classes/trait'
 
 Roommate = newclass("Roommate")
 
+local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis", "Isabelle", "Jessica", "Sheila", "Kelly", "Hanna", "Madeline", "Jill", "Stephanie", "Jae", "Cecelia", "Melanie", "Anne", "Barbara"},
+   ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael", "John", "Sampson", "Frank", "Samuel", "Tom", "Jerry", "Ashburton", "Jack", "Tam", "Paul", "Charlie", "Nikola", "Perry", "Brian", "Sylvester","Xavier", "Bernard", "Tim", "George", "Nathan", "Jose", "Jesus", "Ben", "Simon", "Edward", "Rudolph", "William", "Horton", "Scott", "Peter", "Brock", "Emilio", "Joshua", "Leonardo", "Chris", "Tylor"}}
+
 local CHANGE_CHANCE = .2--.95
 local ANI_SPEED = .50
 local MAX_FRAMES = 12
 local PAUSE_TIME_ROOMMATES = 5
-
 
 -- roommate constructor
 function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, name, numTraits)
@@ -24,7 +26,7 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
    self.seed = seed
    self.frameCount = 0
    self.isAltFrame = false
-   self.random:setSeed(self.seed * 113)
+   self.random:setSeed(self.seed * 113 * socket.gettime())
 
    --math.randomseed(seed + socket.gettime() * 1000)
    --if self.random:random() > CHANGE_CHANCE then
