@@ -256,7 +256,7 @@ function love.keypressed(key)
                for i, roomy in ipairs(roommates) do
                   for j, trait in ipairs(roomy.traits) do
                      if not failure then
-                        if trait.name == "Troll" then
+                        if trait.name == "Troll" and trollFlag == 0 then
                            trollFlag = 1
                            troll = roomy
                         elseif not trait.delivery == 0 then
@@ -294,6 +294,8 @@ function love.keypressed(key)
                failure = true
                trollFlag = 2
                results = troll.name .. " rejects your suggestion out of spite. Or maybe this is " .. troll:getPossessive(false) .. " way of\nletting you know that " .. troll:getPronoun(false) .. " likes you. You'll never know."
+            elseif trollFlag == 1 then
+               trollFlag = 0
             end
             if gameOver then
                --TODO: Game Over logic
@@ -361,12 +363,12 @@ function love.keypressed(key)
    end
    if key == "r" then
       currentTraits = {}
-      for i=1, 4 do
+      for i, roomy in ipairs(roommates) do
          local gender = "girl"
          if i == 1 or i == 4 then
             gender = "boy"
          end
-         roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
+         roomy:init(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
          for i, trait in ipairs(roommates[i].traits) do
             table.insert(currentTraits,trait)
             currentTraits[trait.name] = true
