@@ -9,7 +9,7 @@ local locationNormalList = {}
 locationMasterList = {}
 
 -- text option choices globals
-turnOptions = {"Propose a place to eat","Ask a roommate for a suggestion","Research restaurants"}
+turnOptions = {"Propose a place to eat","Ask roommate for suggestion","Research restaurants"}
 researchOptions = {"Menus","Costs","Delivery Options","Hours"}
 
 function buildDataTables()
