@@ -9,7 +9,7 @@ Middle Class,0,Rich; Cheap,4,2,5,1,,6,12
 Telephonophobia,-1,Lazy,5,1,5,1,,6,12
 Hates Vegetables,0,Vegan; Vegetarian,5,1,5,1,Chinese; Thai; Pho,6,12
 Pescatarian,0,,5,1,5,1,Burgers; Steak; BBQ,6,12
-Gourmet,-1,Simple,5,1,5,1,Burgers; BBQ,6,12
+Gourmet,0,Simple,5,1,5,1,Burgers; BBQ,6,12
 Troll,0,,5,1,5,1,,6,12
 Distracted Easily,0,,5,1,5,1,,6,12
 Eats Late,0,,5,1,5,1,,8,12

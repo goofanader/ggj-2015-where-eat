@@ -26,14 +26,14 @@ function love.load()
    trollTarget = nil
    troll = nil
    speaker = nil
-   hoursFound = false
-   costsFound = false
-   menusFound = false
-   delivFound = false
+   hoursFound = true--false
+   costsFound = true--false
+   menusFound = true--false
+   delivFound = true--false
    --Some constants?
    PAUSE_TIME = 6 --seconds
    LOCATIONS_PER_PAGE = 6
-   SELECTION_WIDTH = 40
+   SELECTION_WIDTH = 30
 
    --loading images
    menuImage = love.graphics.newImage("media/Title_Screen.png")
@@ -142,28 +142,30 @@ function love.draw()
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, LOCATIONS_PER_PAGE do
             if locationSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
+               love.graphics.rectangle("fill", 10 * imageScale, (54+2*i) * imageScale, SELECTION_WIDTH * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             local j = i + (pageSelect - 1) * LOCATIONS_PER_PAGE --Actual number in larger list
             if locationMasterList[j] then
-               love.graphics.print( j .. ") " .. locationMasterList[j].name, 2 * imageScale, (54+2*i) * imageScale)
-               --love.graphics.print( locationMasterList[j].slogan, 2 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
+               love.graphics.print( j .. ") " .. locationMasterList[j].name, 10 * imageScale, (54+2*i) * imageScale)
+               love.graphics.setColor( 255, 255, 255 )
+               love.graphics.print( "\"" .. locationMasterList[j].slogan .. "\"", (11 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)               
+               if menusFound then
+                  love.graphics.print( locationMasterList[j].genre, (51 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+               end
+               if costsFound then
+                  love.graphics.print( locationMasterList[j].cost, (66 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+               end
+               if delivFound then
+                  love.graphics.print( locationMasterList[j].delivery, (72 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+               end
+               if hoursFound then
+                  love.graphics.print( locationMasterList[j].closingTime, (78 + SELECTION_WIDTH) * imageScale, (54+2*i) * imageScale)
+               end
             end
             love.graphics.setColor( 255, 255, 255 )
-            if menusFound then
-               love.graphics.print( locationMasterList[j].genre, 10 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
-            end
-            if costsFound then
-               love.graphics.print( locationMasterList[j].cost, 20 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
-            end
-            if delivFound then
-               love.graphics.print( locationMasterList[j].delivery, 30 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
-            end
-            if hoursFound then
-               love.graphics.print( locationMasterList[j].closingTime, 40 * imageScale + SELECTION_WIDTH, (54+2*i) * imageScale)
-            end
          end
+         
 
       elseif gameState == 3 then --Roommate Options
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
@@ -380,12 +382,16 @@ function love.keypressed(key)
             sfx["select"]:play()
             if researchSelect == 1 then
                results = "You had to spend 15 minutes to refresh your memory on\nwhat type of food each restaurant serves its customers."
+               menusFound = true
             elseif researchSelect == 2 then
                results = "It was a little tricky, but through the use of Yalp and Gaggle, you\nfound the price range of each restaurant."
+               costsFound = true
             elseif researchSelect == 3 then
                results = "You had forgotten before, but now you've finally done it: put all\nthe phone numbers of delivery places on speed dial."
+               delivFound = true
             elseif researchSelect == 4 then
                results = "You spend 15 minutes researching the hours of the restaurants\nand somehow manage to figure out when they all close."
+               hoursFound = true
             end
             researchSelect = 1
             gameState = 5 --go to results

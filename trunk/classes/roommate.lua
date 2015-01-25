@@ -45,7 +45,7 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
 
    --get the number of traits this roommate's gonna get
    if not numTraits then
-      numTraits = self.random:random(2,3)
+      numTraits = 2 --self.random:random(2,3)
    end
 
    -- loop through until we get 4 valid traits
