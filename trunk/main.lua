@@ -87,7 +87,7 @@ function love.load()
    
    local songIndex = 2--math.random(1, table.maxn(songs))
    songs[songIndex]:setLooping(true)
-   songs[songIndex]:setVolume(.05)
+   songs[songIndex]:setVolume(.5)
    songs[songIndex]:play()
 end
 
@@ -346,11 +346,11 @@ function love.keypressed(key)
          elseif key == "return" or key == " " then
             sfx["select"]:play()
             if researchSelect == 1 then
-               results = "what kind of food they all have."
+               results = "You had to spend 15 minutes to refresh your memory on\nwhat type of food each restaurant serves its customers."
             elseif researchSelect == 2 then
-               results = "how much they all cost."
+               results = "It was a little tricky, but through the use of Yalp and Gaggle, you\nfound the price range of each restaurant."
             elseif researchSelect == 3 then
-               results = "which ones have delivery available."
+               results = "You had forgotten before, but now you've finally done it: put all\nthe phone numbers of delivery places on speed dial."
             elseif researchSelect == 4 then
                results = "You spend 15 minutes researching the hours of the restaurants\nand somehow manage to figure out when they all close."
             end
