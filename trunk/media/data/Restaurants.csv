@@ -2,7 +2,7 @@ Name,Genre,Cost,Food Quality,Delivery,Closing Time,Slogan
 WcDonald's,Burgers,1,1,0,12,We don't know if we're lovin' it.
 Chipoodle,Mexican,1,3,0,9,Your dogs will love our burritos.
 Joke in the Box,Burgers,1,2,0,12,It's in the box.
-Pesto Garden,Italian,4,2,0,10,"When you're here, you're family."
+Pesto Garden,Italian,4,2,0,10,When you're here you're family.
 Crepe Amour,Crepes,3,4,0,9,Love crepes.
 Subnose,Sandwiches,1,2,0,11,Your nose knows our sandwiches are good.
 The Outback,Steak,5,4,0,10,The finest Australian cuisine.
@@ -17,7 +17,7 @@ Burger Queen,Burgers,1,2,1,12,You'll have it our way.
 Tetra's,Mediterranean,2,4,1,8,Freshly baked.
 Holang-i BBQ,BBQ,3,3,0,10,An AYCE place.
 Beach Market Deli,Sandwiches,2,2,0,11,On the corner of High St.
-Taco Time,Mexican,1,1,1,12,"Taco Time, Any Time."
+Taco Time,Mexican,1,1,1,12,Taco Time: Any Time.
 Mama Luigi's,Italian,5,4,0,10,We'll take care of you.
 House of Mignon,Steak,5,5,0,10,You can't afford to eat here.
 Mediterraneano's,Mediterranean,3,4,0,10,We're'a not'a an'a italian'a place'a.

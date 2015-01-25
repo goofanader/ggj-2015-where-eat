@@ -10,7 +10,7 @@ function Trait:init(name, delivery, conflicts, highestCost, lowestCost, highestQ
    else
       -- go for it, bro
       self.name = name
-      self.delivery = delivery
+      self.delivery = tonumber(delivery)
       self.highestCost = tonumber(highestCost)
       self.lowestCost = tonumber(lowestCost)
       self.highestQuality = tonumber(highestQuality)
