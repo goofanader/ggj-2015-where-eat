@@ -7,10 +7,14 @@ local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "And
    ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael"}}
 
 -- roommate constructor
-function Roommate:init(gender, imageFile, name, numTraits)
+function Roommate:init(gender, imageFile, textBox, textBoxCoordinates, name, numTraits)
    self.gender = gender
    self.name = name
    self.imageFile = imageFile
+   self.textBox = textBox
+   self.hasTextbox = false
+   self.text = ""
+   self.textBoxCoordinates = textBoxCoordinates
 
    if not self.name then
       math.randomseed(socket.gettime())
@@ -58,17 +62,33 @@ function Roommate:getPronoun(isCapitalized)
    end
 end
 
-function Roommate:startTalking()
+function Roommate:startTalking(textToSay)
+   self.hasTextbox = true
+   self.text = textToSay
 end
 
 function Roommate:stopTalking()
+   self.hasTextbox = false
 end
 
 function Roommate:draw()
    local r,g,b,a = love.graphics.getColor()
-   love.graphics.setColor(255,255,255,0)
-   love.graphics.draw(self.imageFile, 0,0,0, imageScale)
+   local origFont = love.graphics.getFont()
+   love.graphics.setColor(255,255,255,255)
+   love.graphics.setFont(defaultFont)
+   
+   if self.imageFile then
+      love.graphics.draw(self.imageFile, 0,0,0, imageScale)
+   end
+   
+   if self.hasTextbox and self.textBox then
+      love.graphics.draw(self.textBox, 0,0,0, imageScale)
+      love.graphics.setColor(0,0,0)
+      love.graphics.print(self.text, self.textBoxCoordinates[1] * imageScale, self.textBoxCoordinates[2] * imageScale)
+   end
+   
    love.graphics.setColor(r,g,b,a)
+   love.graphics.setFont(origFont)
 end
 
 function Roommate:update(dt)

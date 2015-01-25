@@ -27,10 +27,28 @@ function love.load()
    menuImage = love.graphics.newImage("media/Main_Menu.png")
    foregroundImage = love.graphics.newImage("media/BG_Foreground.png")
    backgroundImage = love.graphics.newImage("media/BG_Background.png")
-   roommate1Image = love.graphics.newImage("media/WestDude.png")
-   roommate2Image = love.graphics.newImage("media/WestDudette.png")
-   roommate3Image = love.graphics.newImage("media/EastDudette.png")
-   --roommate4Image = love.graphics.newImage("media/EastDude.png")
+
+   -- setup the roommate images
+   roommateImages = {}
+   -- begin with their actual selves
+   roommateImages[1] = {}
+   roommateImages[1][1] = love.graphics.newImage("media/WestDude.png")
+   roommateImages[1][2] = love.graphics.newImage("media/WestDudette.png")
+   roommateImages[1][3] = love.graphics.newImage("media/EastDudette.png")
+   --roommateImages[1][4] = love.graphics.newImage("media/EastDude.png")
+
+   -- load the text boxes
+   roommateImages[2] = {}
+   roommateImages[2][1] = love.graphics.newImage("media/TextBox_WestDude.png")
+   roommateImages[2][2] = love.graphics.newImage("media/TextBox_WestDudette.png")
+   roommateImages[2][3] = love.graphics.newImage("media/TextBox_EastDudette.png")
+   --roommateImages[2][4] = love.graphics.newImage("media/TextBox_EastDude.png")
+   
+   -- set the x, y position of the text
+   roommateImages[3] = {}
+   roommateImages[3][1] = {13, 5}
+   roommateImages[3][2] = {48, 18}
+   roommateImages[3][3] = {29, 18}
 
    --set the image scale for the game
    imageScale = WINDOW_WIDTH / backgroundImage:getWidth()
@@ -60,15 +78,15 @@ function love.draw()
       wallClock:draw()
 
       --draw the roommates in between foreground and background
-      love.graphics.draw(roommate1Image, 0,0,0, imageScale)
-      
-      
+      roommates[1]:draw()
+
+
       --draw the foreground
       love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
-      
+
       -- draw the foreground roommates
-      love.graphics.draw(roommate2Image, 0,0,0, imageScale)
-      love.graphics.draw(roommate3Image, 0,0,0, imageScale)
+      roommates[2]:draw()
+      roommates[3]:draw()
 
       --draw black "console"
       love.graphics.setColor( 0, 0, 0 )
@@ -76,7 +94,7 @@ function love.draw()
 
       --draw text
       love.graphics.setColor( 255, 255, 255 )
-      
+
       if gameState == 1 then --Turn Options
          love.graphics.print("WHAT DO YOU DO NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(turnOptions) do
@@ -87,7 +105,7 @@ function love.draw()
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
-         
+
       elseif gameState == 2 then --Restaurant Options
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 6 do
@@ -98,7 +116,7 @@ function love.draw()
             love.graphics.print(i .. ") " .. locationMasterList[i]:__tostring(), 2 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
-         
+
       elseif gameState == 3 then --Roommate Options
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 4 do
@@ -120,11 +138,13 @@ function love.draw()
             love.graphics.setColor( 255, 255, 255 )
          end
       elseif gameState == 5 then --Results Screen!
-         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
-         
+         if results then
+            love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+         end
+
       end
-      
-      
+
+
       if debugOn == 1 then
          love.graphics.setColor( 0, 255, 0 )
          for i=1, 4 do
@@ -132,7 +152,7 @@ function love.draw()
          end
          love.graphics.setColor(255, 255, 255)
       end
-      
+
    end
 end
 
@@ -156,7 +176,7 @@ function love.update(dt)
       if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
          gameState = 1 --go back to start
       end
-      
+
    else
       print("ERROR ERROR ERROR")
    end
@@ -168,9 +188,14 @@ function love.keypressed(key)
    if gameState == 0 then
       if key == "return" or key == " " then
          for i=1, 4 do
-            roommates[i] = Roommate:new(i)
+            local gender = "girl"
+
+            if i == 1 or i == 4 then
+               gender = "boy"
+            end
+            roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
          end
-         
+
          --TODO: play start sound
          gameState = 1
       end
@@ -184,20 +209,25 @@ function love.keypressed(key)
          elseif key == "return" or key == " " then
             gameState = turnSelect + 1 --selects between next 3 gamestates
             turnSelect = 1
-            
+
             for i=1, 4 do
-               roommates[i] = Roommate:new(i)
+               local gender = "girl"
+
+               if i == 1 or i == 4 then
+                  gender = "boy"
+               end
+               roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
             end
             --TODO: play accept sound
          end
-         
+
       elseif gameState == 2 then
          if key == "up" and locationSelect > 1 then
             locationSelect = locationSelect - 1
          elseif key == "down" and locationSelect < 6 then
             locationSelect = locationSelect + 1
          elseif key == "return" or key == " " then
-            
+
             locationSelect = 1
             gameState = 5 --go to results
             resultsTimer = true
@@ -207,7 +237,7 @@ function love.keypressed(key)
             gameState = 1
             --TODO: play back sound
          end
-         
+
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
             roommateSelect = roommateSelect - 1
@@ -226,7 +256,7 @@ function love.keypressed(key)
             gameState = 1
             --TODO: play back sound
          end
-         
+
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
             researchSelect = researchSelect - 1
@@ -243,7 +273,7 @@ function love.keypressed(key)
             gameState = 1
             --TODO: play back sound
          end
-         
+
       elseif gameState == 5 then
          --doo dee doo
          --let them skip it?
