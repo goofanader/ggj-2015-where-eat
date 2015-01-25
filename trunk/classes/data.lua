@@ -16,12 +16,13 @@ function buildDataTables()
    local dataFolder = "media/data"
    
    --let's start with genre
-   local file = love.filesystem.newFile(dataFolder .. "/Genres.csv")
+   --local file = love.filesystem.newFile(dataFolder .. "/Genres.csv")
+   local file = dataFolder .. "/Genres.csv"
    -- drop the first line since it's just the name of columns
    local isFirst = true
    
    --iterate through the lines of the file
-   for line in file:lines() do
+   for line in love.filesystem.lines(file) do
       if not isFirst then
          --insert the genre name into the master list
          local delimitedList = split(line, ",")
@@ -31,14 +32,15 @@ function buildDataTables()
       isFirst = false
    end
    
-   file:close()
+   --file:close()
    
    --next, location
-   file = love.filesystem.newFile(dataFolder .. "/Restaurants.csv")
+   --file = love.filesystem.newFile(dataFolder .. "/Restaurants.csv")
+   file = dataFolder .. "/Restaurants.csv"
    isFirst = true
    
    -- again, iterate through the lines of the file
-   for line in file:lines() do
+   for line in love.filesystem.lines(file) do
       if not isFirst then
          -- delimit on commas
          local delimitedList = split(line, ",")
@@ -55,7 +57,7 @@ function buildDataTables()
       isFirst = false
    end
    
-   file:close()
+   --file:close()
    
    --RANDOMIZE DA TABLE:
    math.randomseed(socket.gettime())
@@ -74,11 +76,12 @@ function buildDataTables()
    end
    
    --finally, trait
-   file = love.filesystem.newFile(dataFolder .. "/Traits.csv")
+   --file = love.filesystem.newFile(dataFolder .. "/Traits.csv")
+   file = dataFolder .. "/Traits.csv"
    isFirst = true
    
    -- iterating yahoo
-   for line in file:lines() do
+   for line in love.filesystem.lines(file) do
       if not isFirst then
          -- delimit on comma
          local delimitedList = split(line, ",")
@@ -98,7 +101,7 @@ function buildDataTables()
       isFirst = false
    end
    
-   file:close()
+   --file:close()
    
    --we're done!
 end
