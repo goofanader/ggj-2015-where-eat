@@ -10,6 +10,7 @@ locationMasterList = {}
 
 -- text option choices globals
 turnOptions = {"Propose a place to eat","Ask a roommate for a suggestion","Research restaurants"}
+researchOptions = {"Menus","Hours"}
 
 function buildDataTables()
    local dataFolder = "media/data"
@@ -54,6 +55,7 @@ function buildDataTables()
    end
    
    file:close()
+   
    --RANDOMIZE DA TABLE:
    math.randomseed(socket.gettime())
    local i = 1

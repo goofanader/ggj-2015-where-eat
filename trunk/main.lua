@@ -34,7 +34,7 @@ function love.load()
 
    gameState = 0
    turnSelect = 1
-   restaurantSelect = 1
+   locationSelect = 1
    roommateSelect = 1
    researchSelect = 1
    debugOn = 1
@@ -75,22 +75,45 @@ function love.draw()
       if gameState == 1 then --Turn Options
          love.graphics.print("WHAT DO YOU DO NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(turnOptions) do
+            if turnSelect == i then
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.setColor( 0, 0, 0 )
+            end
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
+            love.graphics.setColor( 255, 255, 255 )
          end
          
       elseif gameState == 2 then --Restaurant Options
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 6 do
+            if locationSelect == i then
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.setColor( 0, 0, 0 )
+            end
             love.graphics.print(i .. ") " .. locationMasterList[i]:__tostring(), 2 * imageScale, (54+2*i) * imageScale)
+            love.graphics.setColor( 255, 255, 255 )
          end
          
       elseif gameState == 3 then --Roommate Options
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 4 do
-            love.graphics.print(roommates[i].name, 5 * imageScale, (54+2*i) * imageScale)
+            if roommateSelect == i then
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.setColor( 0, 0, 0 )
+            end
+            love.graphics.print(roommates[i].name, 4 * imageScale, (54+2*i) * imageScale)
+            love.graphics.setColor( 255, 255, 255 )
          end
       elseif gameState == 4 then --Research Options
          love.graphics.print("WHAT DO YOU RESEARCH NOW?", 1 * imageScale, 54 * imageScale)
+         for i, string in ipairs(researchOptions) do
+            if researchSelect == i then
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.setColor( 0, 0, 0 )
+            end
+            love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
+            love.graphics.setColor( 255, 255, 255 )
+         end
       end
    end
 end
@@ -130,10 +153,8 @@ function love.keypressed(key)
       if gameState == 1 then
          if key == "up" and turnSelect > 1 then
             turnSelect = turnSelect - 1
-            print(turnSelect)
          elseif key == "down" and turnSelect < 3 then
             turnSelect = turnSelect + 1
-            print(turnSelect)
          elseif key == "return" then
             gameState = turnSelect + 1 --selects between next 3 gamestates
             turnSelect = 1
@@ -144,24 +165,20 @@ function love.keypressed(key)
             --TODO: play accept sound
          end
       elseif gameState == 2 then
-         if key == "up" and restaurantSelect > 1 then
-            restaurantSelect = restaurantSelect - 1
-            print("up")
-         elseif key == "down" and restaurantSelect < 4 then
-            restaurantSelect = restaurantSelect + 1
-            print("down")
+         if key == "up" and locationSelect > 1 then
+            locationSelect = locationSelect - 1
+         elseif key == "down" and locationSelect < 6 then
+            locationSelect = locationSelect + 1
          elseif key == "return" then
-            restaurantSelect = 1
+            locationSelect = 1
             gameState = 1 --go back to start
             --TODO: play accept sound
          end
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
             roommateSelect = roommateSelect - 1
-            print("up")
          elseif key == "down" and roommateSelect < 4 then
             roommateSelect = roommateSelect + 1
-            print("down")
          elseif key == "return" then
             roommateSelect = 1
             gameState = 1 --go back to start
@@ -170,10 +187,8 @@ function love.keypressed(key)
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
             researchSelect = researchSelect - 1
-            print("up")
          elseif key == "down" and researchSelect < 2 then
             researchSelect = researchSelect + 1
-            print("down")
          elseif key == "return" then
             researchSelect = 1
             gameState = 1 --go back to start
