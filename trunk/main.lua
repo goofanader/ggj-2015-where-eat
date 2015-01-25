@@ -14,13 +14,15 @@ function love.load()
    currentTraits = {}
    --get the real dimensions of the screen
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
-   --Initialize state variables
+   --Initialize variables
    gameState = 0
    turnSelect = 1
    locationSelect = 1
    roommateSelect = 1
    researchSelect = 1
    debugOn = 1
+   trollFlag = 0
+   speaker = nil
    --Some constants?
    PAUSE_TIME = 6 --seconds
 
@@ -175,7 +177,7 @@ function love.update(dt)
       end
       if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
          gameState = 1 --go back to start
-         roommates[roommateSelect]:stopTalking()
+         speaker:stopTalking()
          roommateSelect = 1
       end
 
@@ -210,14 +212,11 @@ function love.keypressed(key)
       if gameState == 1 then
          if key == "up" and turnSelect > 1 then
             turnSelect = turnSelect - 1
-         elseif key == "down" and turnSelect < 3 then
+         elseif key == "down" and turnSelect < table.maxn(turnOptions) then
             turnSelect = turnSelect + 1
          elseif key == "return" or key == " " then
-            gameState = turnSelect + 1 --selects between next 3 gamestates
+            gameState = turnSelect + 1 --selects between next gamestates
             turnSelect = 1
-
-            
-            --TODO: play accept sound
          end
 
       elseif gameState == 2 then
@@ -227,54 +226,107 @@ function love.keypressed(key)
             locationSelect = locationSelect + 1
          elseif key == "return" or key == " " then
             --go through all active traits to check for conflicts
-            for i, roomy in ipairs(roommates) do
-               for j, trait in ipairs(roomy.traits) do
-                  --if trait.vegan == 1 and restaurant.vegan == 0
+            local failure = false
+            local troll
+            local location = locationMasterList[locationSelect]
+            local currentHour = wallClock.time.hour
+            if currentHour > location.closingTime then
+               results = "You think about mentioning the possibility of eating at " .. location.name .. " but then realize that they are closed.\nYou sit in shameful awkward silence for 15 minutes."
+               failure = true
+            else
+               for i, roomy in ipairs(roommates) do
+                  for j, trait in ipairs(roomy.traits) do
+                     if not failure then
+                        if trait.name == "Troll" then
+                           trollFlag = 1
+                           troll = roomy
+                        elseif not trait.delivery == 0 then
+                           if trait.delivery > 0 and location.delivery == 0 then
+                              results = roomy.name .. " is way too lazy to get food from anywhere that won't deliver. Looks like you're stuck here."
+                              failure = true
+                           elseif trait.delivery < 0 and location.delivery == 1 then
+                              results = roomy.name .. " is scared of telephones, so you can't bring yourself to call in a delivery order."
+                              --roomy.name .. " is the only one with a phone.\nUnfortunately, " .. roomy:getPronoun(false) .. " is also deathly allergic to talking on the phone.\nOh well."
+                              failure = true
+                           end
+                        elseif currentHour < trait.beginHour then
+                           results = "It's a bit too early for " .. roomy.name .. " to eat now. " .. roomy:getPronoun(true) .. " isn't hungry yet, the bastard!"
+                           failure = true
+                        elseif currentHour >= trait.endHour then
+                           results = roomy.name .. " can't eat after " .. roomy.endHour .. ", it's WAY too late for " .. roomy:getPronoun(false) .. ".\nGAME OVER."
+                           gameOver = true
+                           failure = true
+                        elseif location.cost > trait.highestCost then
+                           results = location.name .. " is WAY too expensive for " .. roomy.name .. ". Maybe you should be more considerate of " .. roomy:getPossessive(false) .. " monetary situation."
+                           failure = true
+                        elseif location.cost < trait.lowestCost then
+                           results = roomy.name .. " can't stand eating at a place of such low caliber. Or maybe " .. roomy:getPronoun(false) .. "'s just a snob."
+                           failure = true
+                        elseif trait.dislikedGenres[location.genre] then
+                           results = roomy.name .. " doesn't like the " .. location.genre .. " at " .. location.name .. "."
+                           failure = true
+                        end
+                     end
+                  end
                end
             end
             
-            locationSelect = 1
-            gameState = 5 --go to results
-            resultsTimer = true
-            --TODO: play accept sound
+            if not failure and trollFlag == 1 then
+               failure = true
+               trollFlag = 2
+               results = troll.name .. " rejects your suggestion out of spite. Or maybe this is " .. troll:getPossessive(false) .. " way of\nletting you know that " .. troll:getPronoun(false) .. " likes you. You'll never know."
+            end
+            if gameOver then
+               --TODO: Game Over logic
+            elseif failure then
+               print("FAILURE!")
+               gameState = 5
+               locationSelect = 1
+               resultsTimer = true
+            else
+               --TODO: Win Game logic
+            end
          elseif key == "backspace" then
             locationSelect = 1
             gameState = 1
-            --TODO: play back sound
          end
 
       elseif gameState == 3 then
          if key == "up" and roommateSelect > 1 then
             roommateSelect = roommateSelect - 1
-         elseif key == "down" and roommateSelect < 4 then
+         elseif key == "down" and roommateSelect < table.maxn(roommates) then
             roommateSelect = roommateSelect + 1
          elseif key == "return" or key == " " then
-            results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect]:getPronoun(true) .. " is pretty much useless."
+            results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect]:getPronoun(true) .. " is pretty much useless. You spend 15 minutes recuperating."
             roommates[roommateSelect]:startTalking("I'm feelin' pizza.")
             gameState = 5 --go to results
             resultsTimer = true
-            --TODO: play accept sound
          elseif key == "backspace" then
             roommateSelect = 1
             gameState = 1
-            --TODO: play back sound
          end
 
       elseif gameState == 4 then
          if key == "up" and researchSelect > 1 then
             researchSelect = researchSelect - 1
-         elseif key == "down" and researchSelect < 2 then
+         elseif key == "down" and researchSelect < table.maxn(researchOptions) then
             researchSelect = researchSelect + 1
          elseif key == "return" or key == " " then
-            results = "You spend 15 minutes researching the " .. "Menus" .. " of the restaurants\nand somehow manage to figure out when they all close."
+            if researchSelect == 1 then
+               results = "what kind of food they all have."
+            elseif researchSelect == 2 then
+               results = "how much they all cost."
+            elseif researchSelect == 3 then
+               results = "which ones have delivery available."
+            elseif researchSelect == 4 then
+               results = "You spend 15 minutes researching the costs of the restaurants\nand somehow manage to figure out when they all close."
+            end
             researchSelect = 1
             gameState = 5 --go to results
             resultsTimer = true
-            --TODO: play accept sound
          elseif key == "backspace" then
             researchSelect = 1
             gameState = 1
-            --TODO: play back sound
          end
 
       elseif gameState == 5 then

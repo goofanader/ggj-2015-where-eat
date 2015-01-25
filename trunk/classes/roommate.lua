@@ -3,8 +3,8 @@ require 'classes/trait'
 
 Roommate = newclass("Roommate")
 
-local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis"},
-   ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael"}}
+local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis", "Isabelle", "Jessica", "Sheila", "Kelly", "Hanna", "Madeline", "Jill", "Stephanie", "Jae", "Cecelia", "Melanie", "Anne", "Barbara"},
+   ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael", "John", "Sampson", "Frank", "Samuel", "Tom", "Jerry", "Ashburton", "Jack", "Tam", "Paul", "Charlie", "Nikola", "Perry", "Brian", "Sylvester","Xavier", "Bernard", "Tim", "George", "Nathan", "Jose", "Jesus", "Ben", "Simon", "Edward", "Rudolph", "William", "Horton", "Scott", "Peter", "Brock", "Emilio", "Joshua", "Leonardo", "Chris", "Tylor"}}
 
 -- roommate constructor
 function Roommate:init(gender, imageFile, textBox, textBoxCoordinates, name, numTraits)
@@ -26,7 +26,7 @@ function Roommate:init(gender, imageFile, textBox, textBoxCoordinates, name, num
    --get the number of traits this roommate's gonna get
    if not numTraits then
       math.randomseed(socket.gettime())
-      numTraits = math.random(2,4) --I just picked 4, we can always change it
+      numTraits = math.random(2,3)
    end
 
    -- loop through until we get 4 valid traits
@@ -62,9 +62,26 @@ function Roommate:getPronoun(isCapitalized)
    end
 end
 
+function Roommate:getPossessive(isCapitalized)
+   if self.gender == "girl" then
+      if isCapitalized then
+         return "Her"
+      else
+         return "her"
+      end
+   elseif self.gender == "boy" then
+      if isCapitalized then
+         return "His"
+      else
+         return "his"
+      end
+   end
+end
+
 function Roommate:startTalking(textToSay)
    self.hasTextbox = true
    self.text = textToSay
+   speaker = self
 end
 
 function Roommate:stopTalking()

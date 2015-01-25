@@ -11,13 +11,13 @@ function Trait:init(name, delivery, conflicts, highestCost, lowestCost, highestQ
       -- go for it, bro
       self.name = name
       self.delivery = delivery
-      self.highestCost = highestCost
-      self.lowestCost = lowestCost
-      self.highestQuality = highestQuality
-      self.lowestQuality = lowestQuality
-      self.dislikedGenres = dislikedGenres
-      self.beginHour = beginHour
-      self.endHour = endHour
+      self.highestCost = tonumber(highestCost)
+      self.lowestCost = tonumber(lowestCost)
+      self.highestQuality = tonumber(highestQuality)
+      self.lowestQuality = tonumber(lowestQuality)
+      self.dislikedGenres = {}
+      self.beginHour = tonumber(beginHour)
+      self.endHour = tonumber(endHour)
       self.conflicts = {}
       
       -- need to delimit the conflicts list
@@ -26,7 +26,16 @@ function Trait:init(name, delivery, conflicts, highestCost, lowestCost, highestQ
          
          for i, conflict in ipairs(delimitedList) do
             -- map the conflicts so we can easily check
-            self.conflicts[conflict] = 1
+            self.conflicts[conflict] = true
+         end
+      end
+      
+      if dislikedGenres then
+         local delimitedList = split(dislikedGenres, "; ")
+         
+         for i, genre in ipairs(delimitedList) do
+            --map the genres so we can easily check
+            self.dislikedGenres[genre] = true
          end
       end
    end

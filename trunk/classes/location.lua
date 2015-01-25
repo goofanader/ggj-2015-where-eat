@@ -3,13 +3,13 @@ require 'class'
 Location = newclass("Location")
 
 -- location constructor
-function Location:init(name, genre, cost, quality, vegetarian, vegan, delivery, closingTime, slogan)
+function Location:init(name, genre, cost, quality, delivery, closingTime, slogan)
    self.name = name
    self.genre = genre
-   self.cost = cost
-   self.quality = quality
+   self.cost = tonumber(cost)
+   self.quality = tonumber(quality)
    self.delivery = delivery
-   self.closingTime = closingTime
+   self.closingTime = tonumber(closingTime)
    self.slogan = slogan
 end
 

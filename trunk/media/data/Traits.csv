@@ -13,6 +13,6 @@ Gourmet,-1,Simple,5,1,5,1,Burgers; BBQ,6,12
 Troll,0,,5,1,5,1,,6,12
 Distracted Easily,0,,5,1,5,1,,6,12
 Eats Late,0,,5,1,5,1,,8,12
-Eats Early,,,,,,,,6,10
+Eats Early,0,,5,1,5,1,,6,10
 Simple,0,Gourmet; Foreign Food,5,1,5,1,Chinese; Thai; Sushi; Mediterranean,6,12
 Foreign Food,0,Simple,5,1,5,1,Burgers; BBQ; Court; Steak; Sandwiches,6,12

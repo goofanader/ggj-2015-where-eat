@@ -1,14 +1,14 @@
 Name,Genre,Cost,Food Quality,Delivery,Closing Time,Slogan
-WcDonald's,Burgers,1,1,0,12,
-Chipoodle,Mexican,1,3,0,9,
-Joke in the Box,Burgers,1,2,0,12,
+WcDonald's,Burgers,1,1,0,12,We don't know if we're lovin' it.
+Chipoodle,Mexican,1,3,0,9,Your dogs will love our burritos.
+Joke in the Box,Burgers,1,2,0,12,We're slightly better than some places.
 Pesto Garden,Italian,4,2,0,10,
 Crepe Amour,Crepes,3,4,0,9,
-Subnose,Sandwiches,1,2,0,11,
-The Outback,Steak,5,4,0,10,
-Dashi,Sushi,4,5,0,10,
-Tar J,Court,2,1,0,11,
-The Food Court,Court,1,3,0,10,
+Subnose,Sandwiches,1,2,0,11,Your nose knows our sandwiches are good.
+The Outback,Steak,5,4,0,10,The finest Australian cuisine.
+Dashi,Sushi,4,5,0,10,Dashi Sushi!
+Tar J,Court,2,1,0,11,Convenient.
+The Food Court,Court,1,3,0,10,Your local food court.
 Alph's,Court,1,1,0,12,
 Stone of Fire,BBQ,2,4,0,11,We come here for the tri-tip
 Papa Don's,Pizza,2,3,1,2,

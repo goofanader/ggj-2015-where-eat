@@ -10,7 +10,7 @@ locationMasterList = {}
 
 -- text option choices globals
 turnOptions = {"Propose a place to eat","Ask a roommate for a suggestion","Research restaurants"}
-researchOptions = {"Menus","Hours","Who Delivers"}
+researchOptions = {"Menus","Costs","Delivery Options","Hours"}
 
 function buildDataTables()
    local dataFolder = "media/data"
@@ -83,16 +83,15 @@ function buildDataTables()
          local delimitedList = split(line, ",")
          
          -- the second column is "ignore", so if there's an x, don't add that trait
-         if delimitedList[2] ~= "x" then
-            -- remove the second column, it shouldn't be added to the object
-            table.remove(delimitedList, 2)
-            local newTrait = Trait:new(unpack(delimitedList))
-            
-            -- insert into the table
-            table.insert(traitMasterList, newTrait)
-            -- make a mapping between the trait name and its object
-            traitMasterList[newTrait.name] = newTrait
-         end
+         
+         -- remove the second column, it shouldn't be added to the object
+         local newTrait = Trait:new(unpack(delimitedList))
+         
+         -- insert into the table
+         table.insert(traitMasterList, newTrait)
+         -- make a mapping between the trait name and its object
+         traitMasterList[newTrait.name] = newTrait
+
       end
       
       isFirst = false
