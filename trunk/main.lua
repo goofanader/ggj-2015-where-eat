@@ -323,6 +323,9 @@ function love.keypressed(key)
          menusFound = false
          delivFound = false
          
+         --Reset Wallclock
+         wallClock.time:setTime(6,0)
+         
          --play a different song
          songs[songIndex]:stop()
          songs[songIndex]:rewind()
