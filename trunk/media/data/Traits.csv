@@ -1,0 +1,18 @@
+Trait Name,Delivery,Conflicts With,Highest Cost,Lowest Cost,Highest Quality,Lowest Quality,Disliked Genres,Begin Hour,End Hour
+Vegan,0,Hates Vegetables,5,1,5,1,Burgers; Steak; BBQ; Pizza; Boba; Seafood; Italian,6,12
+Vegetarian,0,Hates Vegetables,5,1,5,1,Burgers; Steak; BBQ; Seafood,6,12
+Lactose Intolerant,0,,5,1,5,1,Pizza; Boba; Italian,6,12
+Cheap,0,Rich,3,1,5,1,,6,12
+Lazy,1,Telephonobia,5,1,5,1,,6,12
+Rich,0,Cheap,5,3,5,1,,6,12
+Middle Class,0,,4,2,5,1,,6,12
+Telephonophobia,-1,Lazy,5,1,5,1,,6,12
+Hates Vegetables,0,Vegan; Vegetarian,5,1,5,1,Chinese; Thai; Pho,6,12
+Pescatarian,0,,5,1,5,1,Burgers; Steak; BBQ,6,12
+Gourmet,0,Simple,5,1,5,1,Burgers; BBQ,6,12
+Troll,0,,5,1,5,1,,6,12
+Distracted Easily,0,,5,1,5,1,,6,12
+Eats Late,0,,5,1,5,1,,8,12
+Eats Early,0,,5,1,5,1,,6,10
+Simple,0,Gourmet; Foreign Food,5,1,5,1,Chinese; Thai; Sushi; Mediterranean; Seafood; Boba; Crepes,6,12
+Foreign Food,0,Simple,5,1,5,1,Burgers; BBQ; Court; Steak; Sandwiches,6,12
