@@ -42,13 +42,15 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
    end
 
    self.traits = {}
+   self.dislikedGenres = {}
+   self.dislikedGenres[1] = 0 -- this is the count of disliked genres
 
    --get the number of traits this roommate's gonna get
    if not numTraits then
       numTraits = 2 --self.random:random(2,3)
    end
 
-   -- loop through until we get 4 valid traits
+   -- loop through until we get all valid traits
    local i = 1
    while i <= numTraits do
       -- create a random new trait
@@ -61,8 +63,55 @@ function Roommate:init(gender, imageFiles, textBox, textBoxCoordinates, seed, na
          self.traits[newTrait.name] = newTrait
          -- increment the counter
          i = i + 1
+
+         -- add the disliked genres
+         for key, genre in pairs(newTrait.dislikedGenres) do
+            if not self.dislikedGenres[tostring(key)] then
+               self.dislikedGenres[1] = self.dislikedGenres[1] + 1
+            end
+
+            self.dislikedGenres[tostring(key)] = true
+         end
       end
    end
+end
+
+function Roommate:getRandomValidGenre()
+   local capitalGenres = {["Mexican"] = true, ["BBQ"] = true, ["Chinese"] = true, ["Italian"] = true, ["Thai"] = true, ["Mediterranean"] = true}
+   while true do
+      local randIndex = self.random:random(table.maxn(genreMasterList))
+
+      if not self.dislikedGenres[genreMasterList[randIndex]] then
+         if not capitalGenres[genreMasterList[randIndex]] then
+            return string.lower(genreMasterList[randIndex])
+         else
+            return genreMasterList[randIndex]
+         end
+      end
+   end
+end
+
+function Roommate:getRandomInvalidGenre()
+   local capitalGenres = {["Mexican"] = true, ["BBQ"] = true, ["Chinese"] = true, ["Italian"] = true, ["Thai"] = true, ["Mediterranean"] = true}
+
+   if self.dislikedGenres[1] > 0 then
+      local randIndex = self.random:random(1, self.dislikedGenres[1])
+      local counter = 0
+
+      for key, genre in pairs(self.dislikedGenres) do
+         if key ~= 1 and counter == randIndex then
+            if not capitalGenres[key] then
+               return string.lower(key)
+            else
+               return key
+            end
+         end
+
+         counter = counter + 1
+      end
+   end
+   
+   return ""
 end
 
 function Roommate:getPronoun(isCapitalized)
@@ -129,12 +178,12 @@ end
 
 function Roommate:update(dt)
    self.dt = self.dt + dt
-   
+
    local altFrame = 2
    if self.isAltFrame then
       altFrame = 3
    end
-   
+
    if not self.isPaused then
       if self.dt > ANI_SPEED then
          self.dt = 0

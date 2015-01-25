@@ -62,12 +62,12 @@ function love.load()
    roommateImages[3][2] = {48, 18}
    roommateImages[3][3] = {29, 18}
    roommateImages[3][4] = {53, 42}
-   
+
    -- load the songs
    songs = {}
    table.insert(songs, love.audio.newSource("media/bensound-theelevatorbossanova.mp3"))
    table.insert(songs, love.audio.newSource("media/bensound-thejazzpiano.mp3"))
-   
+
    -- load the sounds
    sfx = {["select"] = love.audio.newSource("media/Select.wav", "static"),
       ["back"] = love.audio.newSource("media/Back.wav", "static")}
@@ -86,12 +86,12 @@ function love.load()
    love.graphics.setBackgroundColor( 255, 255, 255 )
 
    wallClock = WallClock:new(Time:new(6, 0))
-   
+
    --play a random song
    math.randomseed(socket.gettime())
    math.random()
    math.random()
-   
+
    local songIndex = 2--math.random(1, table.maxn(songs))
    songs[songIndex]:setLooping(true)
    songs[songIndex]:setVolume(1)
@@ -183,7 +183,7 @@ function love.draw()
             end
             love.graphics.setColor( 255, 255, 255 )
          end
-         
+
 
       elseif gameState == 3 then --Roommate Options
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
@@ -195,7 +195,7 @@ function love.draw()
             love.graphics.print(roommates[i].name, 4 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
-         
+
       elseif gameState == 4 then --Research Options
          love.graphics.print("WHAT DO YOU RESEARCH NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(researchOptions) do
@@ -206,7 +206,7 @@ function love.draw()
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
-         
+
       elseif gameState == 5 then --Results Screen!
          if results then
             love.graphics.print(results, 1 * imageScale, 54 * imageScale)
@@ -281,6 +281,7 @@ function love.keypressed(key)
          -- or alternately, sfx["begin"]:play() for begin game
       end
    else
+      math.randomseed(os.time())
       --TODO: play boop sound
       if gameState == 1 then
          if key == "up" and turnSelect > 1 then
@@ -395,8 +396,48 @@ function love.keypressed(key)
             roommateSelect = roommateSelect + 1
          elseif key == "return" or key == " " then
             sfx["select"]:play()
-            results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect]:getPronoun(true) .. " is pretty much useless. You spend 15 minutes recuperating."
-            roommates[roommateSelect]:startTalking("I'm feelin' pizza.")
+
+            math.random()
+            math.random()
+
+            local suggestionChance = .5
+            if roommates[roommateSelect].traits["Distracted Easily"] then
+               suggestionChance = .75
+            end
+
+            if math.random() < suggestionChance then
+               local negativeStrings = {
+                  "I dunno. I think... Yeah maybe... no. Yeah, never mind.",
+                  "Uhhh... Get back to me in like 5- no, 15 minutes.",
+                  "Huh? What did you say? I wasn't paying attention.",
+                  "You should pick a place.",
+                  "I'm fine with whatever.",
+                  "Yes."
+               }
+
+               results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect]:getPronoun(true) .. " is pretty much useless. You spend 15 minutes recuperating."
+               roommates[roommateSelect]:startTalking(negativeStrings[math.random(table.maxn(negativeStrings))])
+            else
+               local selectedGenre = roommates[roommateSelect]:getRandomValidGenre()
+               local dislikedGenre = roommates[roommateSelect]:getRandomInvalidGenre()
+
+               results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. But you really wish " .. roommates[roommateSelect]:getPronoun() .. "'d suggested a place.\nYou ponder for 15 minutes about why you are still in this living room and not a restaurant."
+
+               local helpfulStrings = {
+                  {"I'm feelin' " .. selectedGenre .. ".",
+                  "I could really go for some " .. selectedGenre .. " right now.",
+                  "What about " .. selectedGenre .. "? Sound good?"},
+                  {"I really don't want " .. dislikedGenre .. " today...",
+                  "Let's not get " .. dislikedGenre .. " anymore. I got sick last time.",
+                  "You know I don't like " .. dislikedGenre .. ", right?"}
+               }
+               local positiveOrNegative = math.random() < .5 and 1 or 2
+               if dislikedGenre == "" then
+                  positiveOrNegative = 1
+               end
+
+               roommates[roommateSelect]:startTalking(helpfulStrings[positiveOrNegative][math.random(table.maxn(helpfulStrings))])
+            end
             gameState = 5 --go to results
             resultsTimer = true
          elseif key == "backspace" then
