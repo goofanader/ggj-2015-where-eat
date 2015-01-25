@@ -22,6 +22,8 @@ function love.load()
    researchSelect = 1
    debugOn = 1
    trollFlag = 0
+   trollTarget = nil
+   troll = nil
    speaker = nil
    --Some constants?
    PAUSE_TIME = 6 --seconds
@@ -146,7 +148,6 @@ function love.draw()
          end
       end
 
-
       if debugOn == 1 then
          love.graphics.setColor( 0, 255, 0 )
          for i=1, 4 do
@@ -159,7 +160,6 @@ function love.draw()
 end
 
 function love.update(dt)
-
    if gameState == 0 then --Main Menu
    elseif gameState == 1 then --Turn options
    elseif gameState == 2 then --Choose a Restaurant
@@ -177,7 +177,9 @@ function love.update(dt)
       end
       if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
          gameState = 1 --go back to start
-         speaker:stopTalking()
+         if speaker then
+            speaker:stopTalking()
+         end
          roommateSelect = 1
       end
 
@@ -207,10 +209,7 @@ function love.keypressed(key)
             for i, trait in ipairs(roommates[i].traits) do
                table.insert(currentTraits,trait)
             end
-
          end
-
-         --TODO: play start sound
          gameState = 1
       end
    else
@@ -233,7 +232,6 @@ function love.keypressed(key)
          elseif key == "return" or key == " " then
             --go through all active traits to check for conflicts
             local failure = false
-            local troll
             local location = locationMasterList[locationSelect]
             local currentHour = wallClock.time.hour
             if currentHour > location.closingTime then
@@ -248,7 +246,7 @@ function love.keypressed(key)
                            troll = roomy
                         elseif not trait.delivery == 0 then
                            if trait.delivery > 0 and location.delivery == 0 then
-                              results = roomy.name .. " is way too lazy to get food from anywhere that won't deliver. Looks like you're stuck here."
+                              results = roomy.name .. " is way too lazy to get food from anywhere that won't deliver. Looks like you're stuck here. 15 minutes passes."
                               failure = true
                            elseif trait.delivery < 0 and location.delivery == 1 then
                               results = roomy.name .. " is scared of telephones, so you can't bring yourself to call in a delivery order."
@@ -285,7 +283,6 @@ function love.keypressed(key)
             if gameOver then
                --TODO: Game Over logic
             elseif failure then
-               print("FAILURE!")
                gameState = 5
                locationSelect = 1
                resultsTimer = true
@@ -325,7 +322,7 @@ function love.keypressed(key)
             elseif researchSelect == 3 then
                results = "which ones have delivery available."
             elseif researchSelect == 4 then
-               results = "You spend 15 minutes researching the costs of the restaurants\nand somehow manage to figure out when they all close."
+               results = "You spend 15 minutes researching the hours of the restaurants\nand somehow manage to figure out when they all close."
             end
             researchSelect = 1
             gameState = 5 --go to results
