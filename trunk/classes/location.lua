@@ -17,5 +17,5 @@ end
 
 -- location's pretty print string
 function Location:__tostring()
-   return self.name .. "(" .. self.genre .. ")"
+   return self.name .. " (" .. self.genre .. ")"
 end

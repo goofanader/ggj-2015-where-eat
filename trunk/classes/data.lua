@@ -5,7 +5,11 @@ require 'classes/trait'
 -- globals of the csv files
 traitMasterList = {}
 genreMasterList = {}
+local locationNormalList = {}
 locationMasterList = {}
+
+-- text option choices globals
+turnOptions = {"Propose a place to eat","Ask a roommate for a suggestion","Research restaurants"}
 
 function buildDataTables()
    local dataFolder = "media/data"
@@ -41,15 +45,30 @@ function buildDataTables()
          local newLocation = Location:new(unpack(delimitedList))
          
          --insert into the table
-         table.insert(locationMasterList, newLocation)
+         table.insert(locationNormalList, newLocation)
          -- make a mapping between the name of a location and its object
-         locationMasterList[newLocation.name] = newLocation
+         -- locationNormalList[newLocation.name] = newLocation
       end
       
       isFirst = false
    end
    
    file:close()
+   --RANDOMIZE DA TABLE:
+   math.randomseed(socket.gettime())
+   local i = 1
+   local imax = table.maxn(locationNormalList)
+   local location
+   while i < imax do
+      location = locationNormalList[math.random(imax)]
+      if not locationMasterList[location.name] then
+         --insert into the table
+         table.insert(locationMasterList, location)
+         -- make a mapping between the name of a location and its object
+         locationMasterList[location.name] = true
+         i = i + 1
+      end
+   end
    
    --finally, trait
    file = love.filesystem.newFile(dataFolder .. "/Traits.csv")
