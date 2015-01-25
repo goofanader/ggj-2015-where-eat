@@ -35,10 +35,10 @@ function love.load()
    roommateImages = {}
    -- begin with their actual selves
    roommateImages[1] = {}
-   roommateImages[1][1] = love.graphics.newImage("media/WestDude_1.png")
-   roommateImages[1][2] = love.graphics.newImage("media/WestDudette_1.png")
-   roommateImages[1][3] = love.graphics.newImage("media/EastDudette_1.png")
-   --roommateImages[1][4] = love.graphics.newImage("media/EastDude.png")
+   roommateImages[1][1] = {love.graphics.newImage("media/WestDude_1.png"), love.graphics.newImage("media/WestDude_2.png"), love.graphics.newImage("media/WestDude_3.png")}
+   roommateImages[1][2] = {love.graphics.newImage("media/WestDudette_1.png"), love.graphics.newImage("media/WestDudette_2.png"), love.graphics.newImage("media/WestDudette_3.png")}
+   roommateImages[1][3] = {love.graphics.newImage("media/EastDudette_1.png"), love.graphics.newImage("media/EastDudette_2.png"), love.graphics.newImage("media/EastDudette_3.png")}
+   roommateImages[1][4] = {love.graphics.newImage("media/EastDude_1.png"), love.graphics.newImage("media/EastDude_2.png"), love.graphics.newImage("media/EastDude_3.png")}
 
    -- load the text boxes
    roommateImages[2] = {}
@@ -46,7 +46,7 @@ function love.load()
    roommateImages[2][2] = love.graphics.newImage("media/TextBox_WestDudette.png")
    roommateImages[2][3] = love.graphics.newImage("media/TextBox_EastDudette.png")
    --roommateImages[2][4] = love.graphics.newImage("media/TextBox_EastDude.png")
-   
+
    -- set the x, y position of the text
    roommateImages[3] = {}
    roommateImages[3][1] = {13, 5}
@@ -82,7 +82,7 @@ function love.draw()
 
       --draw the roommates in between foreground and background
       roommates[1]:draw()
-
+      roommates[4]:draw()
 
       --draw the foreground
       love.graphics.draw(foregroundImage, 0, 0, 0, imageScale)
@@ -186,6 +186,12 @@ function love.update(dt)
    end
 
    wallClock:update(dt)
+
+   for i=1, 4 do
+      if roommates[i] then
+         roommates[i]:update(dt)
+      end
+   end
 end
 
 function love.keypressed(key)
@@ -197,11 +203,11 @@ function love.keypressed(key)
             if i == 1 or i == 4 then
                gender = "boy"
             end
-            roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
+            roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
             for i, trait in ipairs(roommates[i].traits) do
                table.insert(currentTraits,trait)
             end
-            
+
          end
 
          --TODO: play start sound
@@ -270,7 +276,7 @@ function love.keypressed(key)
                   end
                end
             end
-            
+
             if not failure and trollFlag == 1 then
                failure = true
                trollFlag = 2
@@ -348,7 +354,7 @@ function love.keypressed(key)
          if i == 1 or i == 4 then
             gender = "boy"
          end
-         roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i])
+         roommates[i] = Roommate:new(gender, roommateImages[1][i], roommateImages[2][i], roommateImages[3][i], i)
          for i, trait in ipairs(roommates[i].traits) do
             table.insert(currentTraits,trait)
          end
