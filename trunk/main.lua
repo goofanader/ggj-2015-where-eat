@@ -13,6 +13,15 @@ function love.load()
    roommates = {}
    --get the real dimensions of the screen
    WINDOW_WIDTH, WINDOW_HEIGHT = love.graphics.getDimensions()
+   --Initialize state variables
+   gameState = 0
+   turnSelect = 1
+   locationSelect = 1
+   roommateSelect = 1
+   researchSelect = 1
+   debugOn = 1
+   --Some constants?
+   PAUSE_TIME = 6 --seconds
 
    --loading images
    menuImage = love.graphics.newImage("media/Main_Menu.png")
@@ -35,13 +44,6 @@ function love.load()
    --remove when we add a picture background
    --Phyl: we should have a background color, it's good for in case we put the picture some place wrong
    love.graphics.setBackgroundColor( 255, 255, 255 )
-
-   gameState = 0
-   turnSelect = 1
-   locationSelect = 1
-   roommateSelect = 1
-   researchSelect = 1
-   debugOn = 1
 
    wallClock = WallClock:new(Time:new(6, 0))
 end
@@ -79,7 +81,7 @@ function love.draw()
          love.graphics.print("WHAT DO YOU DO NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(turnOptions) do
             if turnSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
@@ -90,7 +92,7 @@ function love.draw()
          love.graphics.print("WHERE DO WE EAT NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 6 do
             if locationSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(i .. ") " .. locationMasterList[i]:__tostring(), 2 * imageScale, (54+2*i) * imageScale)
@@ -101,7 +103,7 @@ function love.draw()
          love.graphics.print("WHO DO YOU ASK NOW?", 1 * imageScale, 54 * imageScale)
          for i=1, 4 do
             if roommateSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(roommates[i].name, 4 * imageScale, (54+2*i) * imageScale)
@@ -111,13 +113,17 @@ function love.draw()
          love.graphics.print("WHAT DO YOU RESEARCH NOW?", 1 * imageScale, 54 * imageScale)
          for i, string in ipairs(researchOptions) do
             if researchSelect == i then
-               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 50 * imageScale, 1.5 * imageScale )
+               love.graphics.rectangle("fill", 2 * imageScale, (54+2*i) * imageScale, 40 * imageScale, defaultFont:getHeight() )
                love.graphics.setColor( 0, 0, 0 )
             end
             love.graphics.print(i .. ") " .. string, 2 * imageScale, (54+2*i) * imageScale)
             love.graphics.setColor( 255, 255, 255 )
          end
+      elseif gameState == 5 then --Results Screen!
+         love.graphics.print(results, 1 * imageScale, 54 * imageScale)
+         
       end
+      
       
       if debugOn == 1 then
          love.graphics.setColor( 0, 255, 0 )
@@ -132,17 +138,25 @@ end
 
 function love.update(dt)
 
-   --Finite State Machine!
-   if gameState == 0 then
-      --Main Menu
-   elseif gameState == 1 then
-      --Turn options
-   elseif gameState == 2 then
-      --Choose a Restaurant
-   elseif gameState == 3 then
-      --Choose a Roommate
-   elseif gameState ==4 then
-      --Choose Research
+   if gameState == 0 then --Main Menu
+   elseif gameState == 1 then --Turn options
+   elseif gameState == 2 then --Choose a Restaurant
+   elseif gameState == 3 then --Choose a Roommate
+   elseif gameState == 4 then --Choose Research
+   elseif gameState == 5 then --Show Results
+      if resultsTimer then --check if we just started this state
+         resultsTimer = false
+         startTime = love.timer.getTime( )
+         tickTime = startTime
+      end
+      if (love.timer.getTime( ) - tickTime) >= (PAUSE_TIME/16) then --Increment the clock
+         wallClock.time:addMinutes(1)
+         tickTime = love.timer.getTime( )
+      end
+      if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
+         gameState = 1 --go back to start
+      end
+      
    else
       print("ERROR ERROR ERROR")
    end
@@ -183,9 +197,10 @@ function love.keypressed(key)
          elseif key == "down" and locationSelect < 6 then
             locationSelect = locationSelect + 1
          elseif key == "return" or key == " " then
+            
             locationSelect = 1
-            gameState = 1 --go back to start
-            wallClock.time:addMinutes(15)
+            gameState = 5 --go to results
+            resultsTimer = true
             --TODO: play accept sound
          elseif key == "backspace" then
             locationSelect = 1
@@ -199,9 +214,12 @@ function love.keypressed(key)
          elseif key == "down" and roommateSelect < 4 then
             roommateSelect = roommateSelect + 1
          elseif key == "return" or key == " " then
+            --Results = "You ask " .. roommates[roommateSelect].name .. " for a suggestion. " .. roommates[roommateSelect].getPronoun(true) .. " picks up your suggestion and THROWS IT ON THE GROUND."
+            results = "You ask " .. "Tuxedo Mask" .. " for a suggestion. " .. "He" .. " picks up your suggestion and THROWS IT ON THE GROUND."
+            --roommates[roommateSelect].startTalking("TEST TEST TEST")
             roommateSelect = 1
-            gameState = 1 --go back to start
-            wallClock.time:addMinutes(15)
+            gameState = 5 --go to results
+            resultsTimer = true
             --TODO: play accept sound
          elseif key == "backspace" then
             roommateSelect = 1
@@ -215,16 +233,21 @@ function love.keypressed(key)
          elseif key == "down" and researchSelect < 2 then
             researchSelect = researchSelect + 1
          elseif key == "return" or key == " " then
+            results = "You spend 15 minutes researching the " .. "Menus" .. "of the restaurants\nand manage to figure out when they all close"
             researchSelect = 1
-            gameState = 1 --go back to start
-            wallClock.time:addMinutes(15)
+            gameState = 5 --go to results
+            resultsTimer = true
             --TODO: play accept sound
          elseif key == "backspace" then
             researchSelect = 1
             gameState = 1
             --TODO: play back sound
          end
-      end
+         
+      elseif gameState == 5 then
+         --doo dee doo
+         --let them skip it?
+      end     
    end
 
    if key == "q" or key == "escape" then
