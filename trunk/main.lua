@@ -32,9 +32,9 @@ function love.load()
    roommateImages = {}
    -- begin with their actual selves
    roommateImages[1] = {}
-   roommateImages[1][1] = love.graphics.newImage("media/WestDude.png")
-   roommateImages[1][2] = love.graphics.newImage("media/WestDudette.png")
-   roommateImages[1][3] = love.graphics.newImage("media/EastDudette.png")
+   roommateImages[1][1] = love.graphics.newImage("media/WestDude_1.png")
+   roommateImages[1][2] = love.graphics.newImage("media/WestDudette_1.png")
+   roommateImages[1][3] = love.graphics.newImage("media/EastDudette_1.png")
    --roommateImages[1][4] = love.graphics.newImage("media/EastDude.png")
 
    -- load the text boxes
