@@ -71,8 +71,8 @@ function love.load()
    -- load the sounds
    sfx = {["select"] = love.sound.newSoundData("media/Select_Phyllis.wav"),
       ["back"] = love.sound.newSoundData("media/Back_Phyllis.wav"),
-      ["move_up"] = love.sound.newSoundData("media/Move_Up.wav"),
-      ["move_down"] = love.sound.newSoundData("media/Move_Down.wav")}
+      --["move_up"] = love.sound.newSoundData("media/Move_Up.wav"),
+      --[[["move_down"] = love.sound.newSoundData("media/Move_Down.wav")]]}
    --sfx["select"]:setVolume(.05)
    --sfx["back"]:setVolume(.05)
 
@@ -100,6 +100,11 @@ function love.load()
    songs[songIndex]:setLooping(true)
    songs[songIndex]:setVolume(.5)
    songs[songIndex]:play()
+   
+   if songIndex == 1 then
+      -- change the pitch of the sounds
+      sfxPitch = 1 --- (1 / 12)
+   end
 end
 
 function love.draw()
@@ -529,5 +534,9 @@ function love.keypressed(key)
 end
 
 function playSound(sound)
-   love.audio.newSource(sound, "static"):play()
+   if sound then
+      local newSound = love.audio.newSource(sound, "static")
+      newSound:setPitch(sfxPitch)
+      newSound:play()
+   end
 end
