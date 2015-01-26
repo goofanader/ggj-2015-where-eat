@@ -86,9 +86,6 @@ function buildDataTables()
          -- delimit on comma
          local delimitedList = split(line, ",")
          
-         -- the second column is "ignore", so if there's an x, don't add that trait
-         
-         -- remove the second column, it shouldn't be added to the object
          local newTrait = Trait:new(unpack(delimitedList))
          
          -- insert into the table

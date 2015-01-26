@@ -424,7 +424,7 @@ function love.keypressed(key)
                            failure = true
                            
                         elseif currentHour >= trait.endHour then
-                           local randomString = {roomy.name .. " can't eat after " .. roomy.endHour:tostring() .. ", it's WAY too late for " .. roomy:getPronoun(false) .. ".\nGAME OVER.",roomy.name .. " has class early in the morning, so can't eat after " .. roomy.endHour:tostring() .. ".\nWhoops.\nGAME OVER."}
+                           local randomString = {roomy.name .. " can't eat after " .. tostring(roomy.endHour) .. ", it's WAY too late for " .. roomy:getPronoun(false) .. ".\nGAME OVER.",roomy.name .. " has class early in the morning, so can't eat after " .. tostring(roomy.endHour) .. ".\nWhoops.\nGAME OVER."}
                            results = randomString[math.random(table.maxn(randomString))]
                            gameOver = true
                            failure = true --prevents other results from triggering
