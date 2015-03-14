@@ -1,0 +1,1 @@
+This game was made for Global Game Jam 2015. Don't expect things to fully work, yeah.
