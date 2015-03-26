@@ -17,7 +17,7 @@ function love.load()
    gameState = 0
    debugOn = -1
    --Some constants?
-   PAUSE_TIME = 6 --seconds
+   PAUSE_TIME = 0.375 --seconds
    LOCATIONS_PER_PAGE = 7
    SELECTION_WIDTH = 30
 
@@ -263,22 +263,15 @@ function love.update(dt)
       if resultsTimer then --check if we just started this state
          resultsTimer = false
          startTime = love.timer.getTime( )
+         minutesToAdd = 15
          tickTime = startTime
       end
-      if (love.timer.getTime( ) - tickTime) >= (PAUSE_TIME/16) then --Increment the clock
+      --if a tick has passed and we still need to add minutes,
+      if ( (love.timer.getTime( ) - tickTime) >= PAUSE_TIME and minutesToAdd > 0) then
+         --then increment the clock
          wallClock.time:addMinutes(1)
+         minutesToAdd = minutesToAdd - 1
          tickTime = love.timer.getTime( )
-      end
-      if (love.timer.getTime( ) - startTime) >= PAUSE_TIME then --Exit this state
-         if speaker then
-            speaker:stopTalking()
-         end
-         if wallClock.time.hour == 12 then
-            results = "It's midnight.\nAll the restaurants are closed.\nExcept for Taco Time.\nYou go to Taco Time with your crappy roommates.\nAnd you eat some crappy tacos.\nGAME OVER."
-            gameState = 7 --GAME OVER
-         else
-            gameState = 1 --go back to start
-         end
       end
    elseif gameState == 6 then --WIN
    elseif gameState == 7 then --LOSE
@@ -424,7 +417,7 @@ function love.keypressed(key)
                            failure = true
                            
                         elseif currentHour >= trait.endHour then
-                           local randomString = {roomy.name .. " can't eat after " .. tostring(roomy.endHour) .. ", it's WAY too late for " .. roomy:getPronoun(false) .. ".\nGAME OVER.",roomy.name .. " has class early in the morning, so can't eat after " .. tostring(roomy.endHour) .. ".\nWhoops.\nGAME OVER."}
+                           local randomString = {roomy.name .. " can't eat after " .. tostring(trait.endHour) .. ", it's WAY too late for " .. roomy:getPronoun(false) .. ".\nGAME OVER.",roomy.name .. " has class early in the morning, so can't eat after " .. tostring(trait.endHour) .. ".\nWhoops.\nGAME OVER."}
                            results = randomString[math.random(table.maxn(randomString))]
                            gameOver = true
                            failure = true --prevents other results from triggering
@@ -570,8 +563,22 @@ function love.keypressed(key)
          end
 
       elseif gameState == 5 then
-         --doo dee doo
-         --let them skip it?
+         if key == 'return' or key == " " then
+            if speaker then
+               speaker:stopTalking()
+            end
+            
+            if minutesToAdd then
+               wallClock.time:addMinutes(minutesToAdd)
+            end
+            
+            if wallClock.time.hour == 12 then
+               results = "It's midnight.\nAll the restaurants are closed.\nExcept for Taco Time.\nYou go to Taco Time with your crappy roommates.\nAnd you eat some crappy tacos.\nGAME OVER."
+               gameState = 7 --GAME OVER
+            else
+               gameState = 1 --go back to start
+            end
+         end
       end     
    end
 
