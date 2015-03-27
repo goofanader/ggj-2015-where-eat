@@ -459,6 +459,7 @@ function love.keypressed(key)
                trollFlag = 0
             end
             if gameOver then
+               gameOver = false
                gameState = 7--Game Over
             elseif failure then
                gameState = 5
