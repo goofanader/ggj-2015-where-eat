@@ -3,7 +3,7 @@ Vegan,0,Hates Vegetables,5,1,5,1,Burgers; Steak; BBQ; Pizza; Boba; Seafood; Ital
 Vegetarian,0,Hates Vegetables,5,1,5,1,Burgers; Steak; BBQ; Seafood,6,12
 Lactose Intolerant,0,,5,1,5,1,Pizza; Boba; Italian,6,12
 Cheap,0,Rich,3,1,5,1,,6,12
-Lazy,1,Telephonobia,5,1,5,1,,6,12
+Lazy,1,Telephonophobia,5,1,5,1,,6,12
 Rich,0,Cheap,5,3,5,1,,6,12
 Middle Class,0,,4,2,5,1,,6,12
 Telephonophobia,-1,Lazy,5,1,5,1,,6,12

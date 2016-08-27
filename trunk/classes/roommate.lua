@@ -3,7 +3,7 @@ require 'classes/trait'
 
 Roommate = newclass("Roommate")
 
-local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis", "Isabelle", "Jessica", "Sheila", "Kelly", "Hanna", "Madeline", "Jill", "Stephanie", "Jae", "Cecelia", "Melanie", "Anne", "Barbara"},
+local randomName = {["girl"] = {"Alice", "Amy", "Joan", "Jamie", "Roberta", "Andrea", "Phyllis", "Isabelle", "Jessica", "Sheila", "Kelly", "Hanna", "Madeline", "Jill", "Stephanie", "Jae", "Cecelia", "Melanie", "Anne", "Barbara", "Jenny"},
    ["boy"] = {"Andrew", "Alex", "Aaron", "Spencer", "Daniel", "David", "Michael", "John", "Sampson", "Frank", "Samuel", "Tom", "Jerry", "Ashburton", "Jack", "Tam", "Paul", "Charlie", "Nikola", "Perry", "Brian", "Sylvester","Xavier", "Bernard", "Tim", "George", "Nathan", "Jose", "Jesus", "Ben", "Simon", "Edward", "Rudolph", "William", "Horton", "Scott", "Peter", "Brock", "Emilio", "Joshua", "Leonardo", "Chris", "Tylor"}}
 
 local CHANGE_CHANCE = .2--.95

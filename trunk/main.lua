@@ -393,34 +393,19 @@ function love.keypressed(key)
                            trollFlag = 1
                            troll = roomy
                            
-                        elseif not trait.delivery == 0 then
-                           if trait.delivery > 0 and location.delivery == 0 then
-                              local randomString = {roomy.name .. " can't muster the strength to get up. It takes " .. roomy:him_her(false) .. " 15 minutes to relay this to you. You figure it'll have to be delivery.",roomy.name .. " is way too lazy to get food from anywhere that won't deliver. Looks like you're stuck here. 15 minutes pass."}
-                              results = randomString[math.random(table.maxn(randomString))]
-                              randomString = {"I don't wanna move.","I'm comfortable here.","That's too far away."}
-                              roomy:startTalking(randomString[math.random(table.maxn(randomString))])
-                              failure = true
-                              
-                           elseif trait.delivery < 0 and location.delivery == 1 then
-                              local randomString = {roomy.name .. " is scared of telephones, so you can't bring yourself to call in a delivery order.\nYou spend 15 minutes reassuring them that there won't be any phone calls made.",roomy.name .. " is the only one with a phone.\nUnfortunately, " .. roomy:he_she(false) .. " is also deathly allergic to talking on the phone.\nOh well. You lose 15 minutes.",roomy.name .. " needs to get out of the house.\n" .. roomy:he_she(true) .. " rejects your suggestion and you spend 15 minutes running away from " .. roomy:him_her(false) .. ".",roomy.name .. " is feeling pretty antsy.\n" .. roomy:he_she(true) .. " wouldn't be happy with delivery.\nYou spend 15 minutes thinking about what you said."}
-                              results = randomString[math.random(table.maxn(randomString))]
-                              randomString = {"I don't wanna call them.","I want to go somewhere.","I need to get out of the house."}
-                              roomy:startTalking(randomString[math.random(table.maxn(randomString))])
-                              failure = true
-                           end
-                           
-                        elseif currentHour < trait.beginHour then
-                           local randomString = {"It's a bit too early for " .. roomy.name .. " to eat now. " .. roomy:he_she(true) .. " isn't hungry yet!\nIn the next 15 minutes, your tummy rumbles 5 times.",roomy.name .. " can't eat until it's dark.\n" .. roomy:he_she(true) .. " points out the window at the dimming horizon.\n\"Still light out!\" " .. roomy:he_she(false) .. " says.\nYou watch the sun set for 15 minutes."}
-                           results = randomString[math.random(table.maxn(randomString))]
-                           randomString = {"It's still light out.","I'm not hungry yet.","Can't we wait a little bit longer?"}
-                           roomy:startTalking(randomString[math.random(table.maxn(randomString))])
-                           failure = true
-                           
+                        
                         elseif currentHour >= trait.endHour then
                            local randomString = {roomy.name .. " can't eat after " .. tostring(trait.endHour) .. ", it's WAY too late for " .. roomy:him_her() .. ".\nYou quickly grab death by food from Taco Time so " .. roomy:he_she(false) .. " can get to bed.\nGAME OVER.",roomy.name .. " has class early in the morning, so can't eat after " .. tostring(trait.endHour) .. ".\nWhoops.\nYou quickly grab death by food from Taco Time so " .. roomy:he_she(false) .. " can get to bed.\nGAME OVER."}
                            results = randomString[math.random(table.maxn(randomString))]
                            gameOver = true
                            failure = true --prevents other results from triggering
+                           
+                        elseif trait.dislikedGenres[location.genre] then
+                           local randomString = {roomy.name .. " doesn't like the " .. location.genre:lower() .. " at " .. location.name .. ".\nTheir loss.\nYou spend 15 minutes pondering how someone could dislike " .. location.genre:lower() .. ".", roomy.name .. " has an aversion to " .. location.genre:lower() .. ".\nWeird.\n15 minutes later, you snap back to reality. This evening is really taking its toll on you.","It just so happens that " .. roomy.name .. " hates " .. location.genre:lower() .. ".\nYou thought you knew everything about " .. roomy.name .. "!\nYou spend 15 minutes contemplating life."}
+                           results = randomString[math.random(table.maxn(randomString))]
+                           randomString = {"I don't like " .. location.genre:lower() .. ".", "Ew, I hate " .. location.genre:lower() .. "!","I'd rather not get " .. location.genre:lower() .. ", it doesn't sit well with me.", "I'm not a fan of " .. location.genre:lower() .. ", can we get something else?"}
+                           roomy:startTalking(randomString[math.random(table.maxn(randomString))])
+                           failure = true
                            
                         elseif location.cost > trait.highestCost then
                            local randomString = {location.name .. " is WAY too expensive for " .. roomy.name .. ".\nMaybe you should be more considerate of " .. roomy:getPossessive(false) .. " monetary situation.\nYou spend 15 minutes feeling bad for what you said.", roomy.name .. " has no money. " .. location.name .. " is pretty expensive.\nYou get the picture.\n" .. roomy.name .. " spends 15 minutes counting spare change."}
@@ -436,12 +421,28 @@ function love.keypressed(key)
                            roomy:startTalking(randomString[math.random(table.maxn(randomString))])
                            failure = true
                            
-                        elseif trait.dislikedGenres[location.genre] then
-                           local randomString = {roomy.name .. " doesn't like the " .. location.genre:lower() .. " at " .. location.name .. ".\nTheir loss.\nYou spend 15 minutes pondering how someone could dislike " .. location.genre:lower() .. ".", roomy.name .. " has an aversion to " .. location.genre:lower() .. ".\nWeird.\n15 minutes later, you snap back to reality. This evening is really taking its toll on you.","It just so happens that " .. roomy.name .. " hates " .. location.genre:lower() .. ".\nYou thought you knew everything about " .. roomy.name .. "!\nYou spend 15 minutes contemplating life."}
+                        elseif currentHour < trait.beginHour then
+                           local randomString = {"It's a bit too early for " .. roomy.name .. " to eat now. " .. roomy:he_she(true) .. " isn't hungry yet!\nIn the next 15 minutes, your tummy rumbles 5 times.",roomy.name .. " can't eat until it's dark.\n" .. roomy:he_she(true) .. " points out the window at the dimming horizon.\n\"Still light out!\" " .. roomy:he_she(false) .. " says.\nYou watch the sun set for 15 minutes."}
                            results = randomString[math.random(table.maxn(randomString))]
-                           randomString = {"I don't like " .. location.genre:lower() .. ".", "Ew, I hate " .. location.genre:lower() .. "!","I'd rather not get " .. location.genre:lower() .. ", it doesn't sit well with me.", "I'm not a fan of " .. location.genre:lower() .. ", can we get something else?"}
+                           randomString = {"It's still light out.","I'm not hungry yet.","Can't we wait a little bit longer?"}
                            roomy:startTalking(randomString[math.random(table.maxn(randomString))])
                            failure = true
+                           
+                        elseif trait.delivery > 0 and location.delivery == 0 then
+                            local randomString = {roomy.name .. " can't muster the strength to get up. It takes " .. roomy:him_her(false) .. " 15 minutes to relay this to you. You figure it'll have to be delivery.",roomy.name .. " is way too lazy to get food from anywhere that won't deliver. Looks like you're stuck here. 15 minutes pass."}
+                            results = randomString[math.random(table.maxn(randomString))]
+                            randomString = {"I don't wanna move.","I'm comfortable here.","That's too far away."}
+                            roomy:startTalking(randomString[math.random(table.maxn(randomString))])
+                            failure = true
+                            
+                        elseif trait.delivery < 0 and location.delivery == 1 then
+                            local randomString = {roomy.name .. " is scared of telephones, so you can't bring yourself to call in a delivery order.\nYou spend 15 minutes reassuring them that there won't be any phone calls made.",roomy.name .. " is the only one with a phone.\nUnfortunately, " .. roomy:he_she(false) .. " is also deathly allergic to talking on the phone.\nOh well. You lose 15 minutes.",roomy.name .. " needs to get out of the house.\n" .. roomy:he_she(true) .. " rejects your suggestion and you spend 15 minutes running away from " .. roomy:him_her(false) .. ".",roomy.name .. " is feeling pretty antsy.\n" .. roomy:he_she(true) .. " wouldn't be happy with delivery.\nYou spend 15 minutes thinking about what you said."}
+                            results = randomString[math.random(table.maxn(randomString))]
+                            randomString = {"I don't wanna call them.","I want to go somewhere.","I need to get out of the house."}
+                            roomy:startTalking(randomString[math.random(table.maxn(randomString))])
+                            failure = true
+                        
+                        
                         end
                      end
                   end
