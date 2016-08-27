@@ -114,7 +114,7 @@ function Roommate:getRandomInvalidGenre()
    return ""
 end
 
-function Roommate:getPronoun(isCapitalized)
+function Roommate:he_she(isCapitalized)
    if self.gender == "girl" then
       if isCapitalized then
          return "She"
@@ -128,6 +128,14 @@ function Roommate:getPronoun(isCapitalized)
          return "he"
       end
    end
+end
+
+function Roommate:him_her()
+   if self.gender == "girl" then
+    return "her"
+   elseif self.gender == "boy" then
+    return "him"
+  end
 end
 
 function Roommate:getPossessive(isCapitalized)
